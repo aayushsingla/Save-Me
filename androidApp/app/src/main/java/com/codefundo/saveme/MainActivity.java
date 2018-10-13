@@ -1,18 +1,22 @@
 package com.codefundo.saveme;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
+import com.codefundo.saveme.rescueteam.RescueFragment;
+import com.codefundo.saveme.victimpanel.VictimFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity {
+    private final static String TAG_RESCUE_FRAGMENT = "RescueFragment";
+    private final static String TAG_VICTIM_FRAGMENT = "VictimFragment";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,14 +25,21 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        loadFragments();
+
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show());
+    }
+
+    private void loadFragments() {
+        final FragmentManager featuresFragManager = getSupportFragmentManager();
+        final FragmentTransaction fragmentTransaction = featuresFragManager.beginTransaction();
+        if (featuresFragManager.getFragments().size() == 0) {
+            fragmentTransaction.add(R.id.container_fragments_home, new VictimFragment(), TAG_VICTIM_FRAGMENT);
+            fragmentTransaction.add(R.id.container_fragments_home, new RescueFragment(), TAG_RESCUE_FRAGMENT);
+            fragmentTransaction.commit();
+        }
     }
 
     @Override

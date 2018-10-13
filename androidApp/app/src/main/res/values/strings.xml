@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Save Me</string>
     <string name="action_settings">Settings</string>
+    <string name="activity_rescue_team">Rescue Team</string>
+    <string name="activity_victim_panel">Victim Panel</string>
+
 </resources>
