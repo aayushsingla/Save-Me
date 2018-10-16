@@ -59,8 +59,8 @@ public class VictimFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(final View view) {
-        final Intent eateriesActivityIntent = new Intent(view.getContext(), VictimActivity.class);
-        startActivity(eateriesActivityIntent);
+        final Intent mapActivityIntent = new Intent(view.getContext(), MapActivity.class);
+        startActivity(mapActivityIntent);
     }
 
 

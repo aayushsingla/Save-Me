@@ -30,9 +30,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-public class MainActivity extends AppCompatActivity {
-    private final static String TAG_RESCUE_FRAGMENT = "RescueFragment";
-    private final static String TAG_VICTIM_FRAGMENT = "VictimFragment";
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+
+    private BottomNavigationView mBottomNavigationView;
+    public class MainActivity extends AppCompatActivity {
     private MobileServiceClient mClient;
 
     @Override
@@ -115,5 +116,24 @@ public class MainActivity extends AppCompatActivity {
 
     public void checkDataRefresh() {
 
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.nav_home:
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.container_fragments, HomeFragment.newInstance(), "HomeFragment").commit();
+                break;
+            case R.id.nav_contacts:
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.container_fragments, HomeFragment.newInstance()).commit();
+                break;
+            case R.id.nav_user:
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.container_fragments, HomeFragment.newInstance()).commit();
+                break;
+        }
+        return true;
     }
 }
