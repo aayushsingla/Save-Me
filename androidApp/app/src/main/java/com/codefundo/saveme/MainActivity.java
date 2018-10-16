@@ -1,5 +1,6 @@
 package com.codefundo.saveme;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -7,33 +8,24 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.codefundo.saveme.models.UserData;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.microsoft.windowsazure.mobileservices.*;
-
-import com.codefundo.saveme.rescueteam.RescueFragment;
-import com.codefundo.saveme.victimpanel.VictimFragment;
+import com.codefundo.saveme.victimpanel.MapActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
 
 import java.net.MalformedURLException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Random;
-import java.util.UUID;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     private BottomNavigationView mBottomNavigationView;
-    public class MainActivity extends AppCompatActivity {
     private MobileServiceClient mClient;
 
     @Override
@@ -55,22 +47,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        loadFragments();
 
         testingAddData();
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
-    }
+        fab.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MapActivity.class)));
 
-    private void loadFragments() {
-        final FragmentManager featuresFragManager = getSupportFragmentManager();
-        final FragmentTransaction fragmentTransaction = featuresFragManager.beginTransaction();
-        if (featuresFragManager.getFragments().size() == 0) {
-            fragmentTransaction.add(R.id.container_fragments_home, new VictimFragment(), TAG_VICTIM_FRAGMENT);
-            fragmentTransaction.add(R.id.container_fragments_home, new RescueFragment(), TAG_RESCUE_FRAGMENT);
-            fragmentTransaction.commit();
-        }
+        mBottomNavigationView = findViewById(R.id.bottom_navigation);
+        mBottomNavigationView.setOnNavigationItemSelectedListener(this);
+        mBottomNavigationView.setSelectedItemId(R.id.nav_home);
     }
 
     @Override
