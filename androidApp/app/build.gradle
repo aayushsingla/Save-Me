@@ -23,7 +23,11 @@ android {
         exclude 'META-INF/ASL2.0'
     }
     buildTypes {
-        release {
+            debug {
+                manifestPlaceholders = ['redirectUriScheme': 'saveme://easyauth.callback']
+            }
+            release {
+            manifestPlaceholders = ['redirectUriScheme': 'saveme://easyauth.callback']
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -43,12 +47,12 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
-    implementation 'com.microsoft.azure:azure-documentdb:2.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.microsoft.azure:azure-mobile-android:3.4.0'
+    implementation 'com.android.support:customtabs:28.0.2'
 
 }
 repositories {

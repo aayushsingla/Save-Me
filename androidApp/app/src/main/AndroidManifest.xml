@@ -57,7 +57,26 @@
 
         <activity
             android:name=".victimpanel.MapActivity"
-            android:label="@string/title_activity_map"></activity>
+            android:label="@string/title_activity_map" />
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login_axtivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
+        <activity android:name="com.microsoft.windowsazure.mobileservices.authentication.RedirectUrlActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="easyauth.callback"
+                    android:scheme="saveme" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
