@@ -15,8 +15,10 @@ import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
+import com.microsoft.windowsazure.mobileservices.table.TableQueryCallback;
 
 import java.net.MalformedURLException;
+import java.util.List;
 import java.util.Random;
 
 import androidx.annotation.NonNull;
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
 
         testingAddData();
+        checkDataRefresh();
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MapActivity.class)));
 
@@ -84,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         for(int i=0;i<100;i++) {
             UserData item = new UserData();
 
+
             item.name = Long.toHexString(( new Random()).nextLong());
 
             table.insert(item, new TableOperationCallback<UserData>() {
@@ -99,7 +103,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     public void checkDataRefresh() {
-
+        MobileServiceTable<UserData> table = mClient.getTable(UserData.class);
+        table.where().execute(new TableQueryCallback<UserData>() {
+            @Override
+            public void onCompleted(List<UserData> result, int count, Exception exception, ServiceFilterResponse response) {
+                for (UserData data : result)
+                    Log.d("USER", data.id);
+            }
+        });
     }
 
     @Override

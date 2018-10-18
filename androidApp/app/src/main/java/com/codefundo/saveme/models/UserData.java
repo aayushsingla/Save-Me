@@ -6,5 +6,5 @@ public class UserData {
     public String name;//,phonenumber,email,status,memberType;
     public String id; // YOu need a ID for this thing to work
 
-    //public Double currentLat,currentLong;
+    public Double currentLat, currentLong;
 }
