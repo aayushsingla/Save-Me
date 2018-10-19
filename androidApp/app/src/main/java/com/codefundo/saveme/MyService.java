@@ -9,15 +9,11 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
-import com.codefundo.saveme.models.UserData;
+import com.codefundo.saveme.models.VictimData;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-import com.microsoft.windowsazure.mobileservices.table.TableQueryCallback;
-
-import java.net.MalformedURLException;
-import java.util.List;
 
 public class MyService extends Service {
     public MyService() {
@@ -35,31 +31,18 @@ public class MyService extends Service {
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         String deviceId = telephonyManager.getDeviceId();
 
-        MobileServiceClient mClient = null;
-        try {
-            mClient = new MobileServiceClient(
-                    "https://rescue-mission.azurewebsites.net",
-                    this);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        MobileServiceTable<UserData> table = mClient.getTable(UserData.class);
-        table.where().field("id").eq(deviceId).execute(new TableQueryCallback<UserData>() {
-            @Override
-            public void onCompleted(List<UserData> result, int count, Exception exception, ServiceFilterResponse response) {
-                UserData data = new UserData();
-                data = result.get(0);
-                if (location != null) {
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-
-                    data.currentLat = latitude;
-                    data.currentLong = longitude;
-
-                    table.update(data);
-
-                }
+        MobileServiceClient mClient = SaveMe.getAzureClient(this);
+        MobileServiceTable<VictimData> table = mClient.getTable(VictimData.class);
+        table.where().field("id").eq(deviceId).execute((result, count, exception, response) -> {
+            VictimData data;
+            data = result.get(0);
+            if (location != null) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                data.setCurrentLat(latitude);
+                data.setCurrentLong(longitude);
+                Log.e("location", latitude + " " + longitude);
+                table.update(data);
             }
         });
         throw new UnsupportedOperationException("Not yet implemented");
