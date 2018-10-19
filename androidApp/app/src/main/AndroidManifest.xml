@@ -15,6 +15,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
 
     <application
         android:name=".SaveMe"
@@ -56,7 +58,7 @@
             android:name=".victimpanel.MapActivity"
             android:label="@string/title_activity_map" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".auth.LoginActivity"
             android:label="@string/title_activity_login_activity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -89,7 +91,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DetailsActivity"
+            android:name=".auth.DetailsActivity"
             android:label="User Details"
             android:theme="@style/AppTheme.NoActionBar">
 

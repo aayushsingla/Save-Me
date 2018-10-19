@@ -1,11 +1,18 @@
-package com.codefundo.saveme;
+package com.codefundo.saveme.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.codefundo.saveme.MainActivity;
+import com.codefundo.saveme.R;
+import com.codefundo.saveme.SaveMe;
 import com.codefundo.saveme.models.UserData;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
@@ -22,6 +29,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     private TextView emergencyNumber1Tv;
     private TextView emergencyNumber2Tv;
     private TextView bloodGroupTv;
+    private ProgressBar progressBar;
 
 
     @Override
@@ -42,6 +50,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         emergencyNumber1Tv = findViewById(R.id.et_emergency_number_1);
         emergencyNumber2Tv = findViewById(R.id.et_emergency_number_2);
         bloodGroupTv = findViewById(R.id.et_blood_group);
+        progressBar = findViewById(R.id.progress_bar);
 
         skipButton.setOnClickListener(v -> startActivity(new Intent(DetailsActivity.this, MainActivity.class)));
         nextButton.setOnClickListener(this);
@@ -50,11 +59,12 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
+        progressBar.setVisibility(View.VISIBLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         MobileServiceClient mClient = SaveMe.getAzureClient(this);
-        if (mClient != null) {
-            MobileServiceTable<UserData> table = mClient.getTable(UserData.class);
-        }
-        //      getBasicData();
+
+        getBasicData();
         item.setAddress(addressTv.getText().toString());
         item.setContactNumber(contactNumberTv.getText().toString());
         item.setEmergencyNumber1(emergencyNumber1Tv.getText().toString());
@@ -63,16 +73,27 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         item.setCity(cityTv.getText().toString());
         item.setState(stateTv.getText().toString());
         item.setPincode(pincodeTv.getText().toString());
+
+        if (mClient != null) {
+            MobileServiceTable<UserData> table = mClient.getTable(UserData.class);
+            table.insert(item, (entity, exception, response) -> {
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+            });
+
+        }
     }
 
-    /*
+
     private void getBasicData() {
-        MobileServiceClient mobileServiceClient=SaveMe.getAzureClient();
-        item.setName(mobileServiceClient.getCurrentUser());
-        item.setEmailAddress(mobileServiceClient.getCurrentUser().getUserId());
-        item.setPhotoUrl(mobileServiceClient.getCurrentUser().getUserId());
-        item.setId(mobileServiceClient.getCurrentUser().getUserId());
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if (account != null) {
+            item.setName(account.getDisplayName());
+            item.setEmailAddress(account.getEmail());
+            item.setPhotoUrl(account.getPhotoUrl().toString());
+            item.setId(LoginActivity.getCurrentUserUniqueId(this));
+        }
     }
-*/
+
 
 }
