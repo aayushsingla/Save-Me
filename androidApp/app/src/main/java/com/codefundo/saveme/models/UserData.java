@@ -4,7 +4,7 @@ package com.codefundo.saveme.models;
 public class UserData {
     // Create a Easy table with name same as class.
     //mandatory information for user to provide
-    private String id;
+    private String id; //IMEI id
     private String name;
     private String emailAddress;
     private String photoUrl;
@@ -20,6 +20,7 @@ public class UserData {
     private String emergencyNumber1;
     private String emergencyNumber2;
     private String bloodGroup;
+    private String azureId;
 
     public String getId() {
         return id;
@@ -81,5 +82,57 @@ public class UserData {
         return state;
     }
 
-    //public Double currentLat,currentLong;
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getPincode() {
+        return pincode;
+    }
+
+    public void setPincode(String pincode) {
+        this.pincode = pincode;
+    }
+
+    public String getContactNumber() {
+        return contactNumber;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    public String getEmergencyNumber1() {
+        return emergencyNumber1;
+    }
+
+    public void setEmergencyNumber1(String emergencyNumber1) {
+        this.emergencyNumber1 = emergencyNumber1;
+    }
+
+    public String getEmergencyNumber2() {
+        return emergencyNumber2;
+    }
+
+    public void setEmergencyNumber2(String emergencyNumber2) {
+        this.emergencyNumber2 = emergencyNumber2;
+    }
+
+    public String getBloodGroup() {
+        return bloodGroup;
+    }
+
+    public void setBloodGroup(String bloodGroup) {
+        this.bloodGroup = bloodGroup;
+    }
+
+    public String getAzureId() {
+        return azureId;
+    }
+
+    public void setAzureId(String azureId) {
+        this.azureId = azureId;
+    }
+
+
 }

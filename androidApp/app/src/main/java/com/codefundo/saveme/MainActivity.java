@@ -2,21 +2,16 @@ package com.codefundo.saveme;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.codefundo.saveme.models.UserData;
 import com.codefundo.saveme.victimpanel.MapActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
-import com.microsoft.windowsazure.mobileservices.table.TableQueryCallback;
-
-import java.net.MalformedURLException;
-import java.util.List;
-import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,13 +19,14 @@ import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
+    private MobileServiceClient mClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        mClient = SaveMe.getAzureClient(this);
 
         checkDataRefresh();
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -65,12 +61,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     public void checkDataRefresh() {
         MobileServiceTable<UserData> table = mClient.getTable(UserData.class);
-        table.where().execute(new TableQueryCallback<UserData>() {
-            @Override
-            public void onCompleted(List<UserData> result, int count, Exception exception, ServiceFilterResponse response) {
-                for (UserData data : result)
-                    Log.d("USER", data.id);
-            }
+        table.where().execute((result, count, exception, response) -> {
+            for (UserData data : result)
+                Log.d("USER", data.getId());
         });
     }
 
@@ -89,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.container_fragments, HomeFragment.newInstance()).commit();
                 break;
+
         }
         return true;
     }

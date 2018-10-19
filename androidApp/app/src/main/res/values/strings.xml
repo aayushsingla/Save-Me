@@ -21,5 +21,6 @@
     </string>
     <string name="title_activity_login_activity">LoginActivity</string>
     <string name="skip"><u>Skip</u></string>
+    <string name="title_activity_admin_activity">Admin Activity</string>
 
 </resources>

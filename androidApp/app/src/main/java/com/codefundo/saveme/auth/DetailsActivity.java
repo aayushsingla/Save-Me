@@ -1,7 +1,11 @@
 package com.codefundo.saveme.auth;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -18,6 +22,7 @@ import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 public class DetailsActivity extends AppCompatActivity implements View.OnClickListener {
     private UserData item = new UserData();
@@ -52,7 +57,12 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         bloodGroupTv = findViewById(R.id.et_blood_group);
         progressBar = findViewById(R.id.progress_bar);
 
-        skipButton.setOnClickListener(v -> startActivity(new Intent(DetailsActivity.this, MainActivity.class)));
+        skipButton.setOnClickListener(v -> {
+            getBasicData();
+            pushToDatabase();
+            startActivity(new Intent(DetailsActivity.this, MainActivity.class));
+
+        });
         nextButton.setOnClickListener(this);
 
     }
@@ -62,7 +72,6 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         progressBar.setVisibility(View.VISIBLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        MobileServiceClient mClient = SaveMe.getAzureClient(this);
 
         getBasicData();
         item.setAddress(addressTv.getText().toString());
@@ -73,27 +82,37 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         item.setCity(cityTv.getText().toString());
         item.setState(stateTv.getText().toString());
         item.setPincode(pincodeTv.getText().toString());
-
-        if (mClient != null) {
-            MobileServiceTable<UserData> table = mClient.getTable(UserData.class);
-            table.insert(item, (entity, exception, response) -> {
-                startActivity(new Intent(this, MainActivity.class));
-                finish();
-            });
-
-        }
+        pushToDatabase();
     }
 
 
     private void getBasicData() {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if (account != null) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                String deviceId = telephonyManager.getDeviceId();
+                item.setId(deviceId);
+
+            }
             item.setName(account.getDisplayName());
             item.setEmailAddress(account.getEmail());
             item.setPhotoUrl(account.getPhotoUrl().toString());
-            item.setId(LoginActivity.getCurrentUserUniqueId(this));
+            item.setAzureId(LoginActivity.getCurrentUserUniqueId(this));
+            item.setMemberType("User");
         }
     }
 
+    private void pushToDatabase() {
+        MobileServiceClient mClient = SaveMe.getAzureClient(this);
+        if (mClient != null) {
+            MobileServiceTable<UserData> table = mClient.getTable(UserData.class);
+            table.insert(item, (entity, exception, response) -> {
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+            });
+        }
+
+    }
 
 }

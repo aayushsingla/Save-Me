@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.codefundo.saveme.admin.AdminFragment;
 import com.codefundo.saveme.rescueteam.RescueFragment;
 import com.codefundo.saveme.victimpanel.VictimFragment;
 
@@ -18,6 +19,7 @@ public class HomeFragment extends Fragment {
 
     private final static String TAG_RESCUE_FRAGMENT = "RescueFragment";
     private final static String TAG_VICTIM_FRAGMENT = "VictimFragment";
+    private static final String TAG_ADMIN_FRAGMENT = "AdminFragment";
 
     public HomeFragment() {
         // Required empty public constructor
@@ -47,6 +49,7 @@ public class HomeFragment extends Fragment {
         if (featuresFragManager.getFragments().size() == 0) {
             fragmentTransaction.add(R.id.container_fragments_home, new VictimFragment(), TAG_VICTIM_FRAGMENT);
             fragmentTransaction.add(R.id.container_fragments_home, new RescueFragment(), TAG_RESCUE_FRAGMENT);
+            fragmentTransaction.add(R.id.container_fragments_home, new AdminFragment(), TAG_ADMIN_FRAGMENT);
             fragmentTransaction.commit();
         }
     }
