@@ -8,6 +8,15 @@ import android.view.MenuItem;
 import com.codefundo.saveme.victimpanel.MapActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
+import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
+import com.microsoft.windowsazure.mobileservices.table.TableQueryCallback;
+
+import java.net.MalformedURLException;
+import java.util.List;
+import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setSupportActionBar(toolbar);
 
 
+        checkDataRefresh();
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MapActivity.class)));
 
@@ -51,6 +61,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void checkDataRefresh() {
+        MobileServiceTable<UserData> table = mClient.getTable(UserData.class);
+        table.where().execute(new TableQueryCallback<UserData>() {
+            @Override
+            public void onCompleted(List<UserData> result, int count, Exception exception, ServiceFilterResponse response) {
+                for (UserData data : result)
+                    Log.d("USER", data.id);
+            }
+        });
     }
 
     @Override

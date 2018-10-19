@@ -23,19 +23,20 @@ android {
         exclude 'META-INF/ASL2.0'
     }
     buildTypes {
-            debug {
-                manifestPlaceholders = ['redirectUriScheme': 'saveme://easyauth.callback']
-            }
-            release {
-                manifestPlaceholders = ['redirectUriScheme': 'saveme://easyauth.callback']
-                minifyEnabled false
-                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
+//    dexOptions {
+//        incremental true
+//    }
 }
 
 dependencies {

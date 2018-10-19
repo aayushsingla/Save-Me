@@ -39,7 +39,6 @@
         app:fabCustomSize="60dp"
         app:layout_anchor="@id/bottom_navigation"
         app:layout_anchorGravity="top|end"
-        app:layout_behavior="com.codefundo.saveme.BottomNavigationFabBehaviour"
         app:srcCompat="@drawable/map_fab"
         app:useCompatPadding="true" />
 
@@ -53,7 +52,6 @@
         android:layout_marginRight="5dp"
         android:background="?android:attr/windowBackground"
         android:elevation="16dp"
-        app:layout_behavior="com.codefundo.saveme.BottomNavigationViewBehaviour"
         app:menu="@menu/menu_bottom_nav">
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
