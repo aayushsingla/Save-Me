@@ -6,12 +6,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.codefundo.saveme.models.CampData;
 import com.codefundo.saveme.models.UserData;
+import com.codefundo.saveme.models.VictimData;
+import com.codefundo.saveme.models.VolunteerData;
 import com.codefundo.saveme.victimpanel.MapActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+
+import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +41,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         BottomNavigationView mBottomNavigationView = findViewById(R.id.bottom_navigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(this);
         mBottomNavigationView.setSelectedItemId(R.id.nav_home);
+
+        //pushVictimData();
+        //pushCampData();
+        //pushVolunteerData();
     }
 
     @Override
@@ -47,12 +56,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -68,6 +73,65 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         });
     }
 
+    private void pushVictimData() {
+        for (int i = 0; i < 100; i++) {
+            MobileServiceTable<VictimData> table = mClient.getTable(VictimData.class);
+            VictimData victimData = new VictimData();
+
+            Random random = new Random();
+            victimData.setId(Long.toHexString(random.nextLong()));
+            victimData.setAzureId(Long.toHexString(random.nextLong()));
+            victimData.setId(Long.toHexString(random.nextLong()));
+            victimData.setCurrentLat((random.nextDouble() * -180.0) + 90.0);
+            victimData.setCurrentLong((random.nextDouble() * -180.0) + 90.0);
+            victimData.setStatus("danger");
+
+            table.insert(victimData);
+        }
+    }
+
+    private void pushCampData() {
+        for (int i = 0; i < 40; i++) {
+            MobileServiceTable<CampData> table = mClient.getTable(CampData.class);
+            CampData campData = new CampData();
+
+            Random random = new Random();
+            campData.setId(Long.toHexString(random.nextLong()));
+            campData.setCreatorAzureId(Long.toHexString(random.nextLong()));
+            campData.setName(Long.toHexString(random.nextLong()));
+            campData.setLatitude((random.nextDouble() * -180.0) + 90.0);
+            campData.setLongitude((random.nextDouble() * -180.0) + 90.0);
+            campData.setType(getCampType(random.nextInt()));
+
+            table.insert(campData);
+        }
+
+    }
+
+    private void pushVolunteerData() {
+        for (int i = 0; i < 50; i++) {
+            MobileServiceTable<VolunteerData> table = mClient.getTable(VolunteerData.class);
+            VolunteerData volunteerData = new VolunteerData();
+
+            Random random = new Random();
+            volunteerData.setId(Long.toHexString(random.nextLong()));
+            volunteerData.setAzureId(Long.toHexString(random.nextLong()));
+            volunteerData.setCurrentLat((random.nextDouble() * -180.0) + 90.0);
+            volunteerData.setCurrentLong((random.nextDouble() * -180.0) + 90.0);
+            volunteerData.setCurrentStatus("working");
+
+            table.insert(volunteerData);
+        }
+    }
+
+    private String getCampType(int i) {
+        if (i % 2 == 0) {
+            return "Medical Help";
+        } else {
+            return "Food Camp";
+        }
+
+    }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {

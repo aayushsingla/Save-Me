@@ -3,15 +3,22 @@ package com.codefundo.saveme.victimpanel;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.codefundo.saveme.R;
+import com.codefundo.saveme.SaveMe;
+import com.codefundo.saveme.models.CampData;
+import com.codefundo.saveme.models.VictimData;
+import com.codefundo.saveme.models.VolunteerData;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -21,8 +28,21 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.mobileservices.MobileServiceList;
+import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+
+import java.util.HashMap;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,14 +50,27 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-public class MapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMarkerClickListener {
 
     private final static int REQUEST_CODE_LOCATION_PERMISSION = 123;
     private final String TAG = MapActivity.class.getSimpleName();
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;
     private Location mLastLocation;
+    private MobileServiceClient mClient;
+    private MobileServiceList campLocations;
+    private BitmapDescriptor victimBitmap;
+    private BitmapDescriptor foodBitmap;
+    private BitmapDescriptor hospitalBitmap;
+    private BitmapDescriptor volunteerBitmap;
+    private HashMap<String, Marker> lastLocationVictimHashmap = new HashMap<>();
+    private HashMap<String, Marker> lastLocationVolunteerHashmap = new HashMap<>();
+    private MobileServiceList victimLocations;
+    private MobileServiceList volunteerLocations;
+    private Handler handlerVictims;
+    private Handler handlerVolunteers;
+    private Runnable runnerVictims;
+    private Runnable runnerVolunteers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +82,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+        prepareBitmaps();
     }
-
 
     /**
      * Manipulates the map once available.
@@ -65,6 +98,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mapReady();
+
     }
 
     private void mapReady() {
@@ -95,43 +129,30 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
         }
+
         buildGoogleApiClient();
+        fetchLocationOfVictims();
+        fetchLocationOfCamps();
+        fetchLocationOfVolunteers();
+        mMap.setOnMarkerClickListener(this);
     }
 
-    private void askLocationPermissions() {
-        // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Permission is not granted
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                Log.d(TAG, "Explanation for Permissions shown");
-
-                new AlertDialog.Builder(this)
-                        .setTitle("Access to Location")
-                        .setMessage("Location Permissions are necessary for this app to function so, that someone from our rescue team can come and help you.")
-                        .setPositiveButton("OK", (dialog, which) -> ActivityCompat.requestPermissions(this,
-                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION))
-                        .show();
-            } else {
-                // No explanation needed; request the permission
-                Log.d(TAG, "Permission Requested");
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        } else {
-            // Permission has already been granted
-            Log.d(TAG, "Permission Granted");
-        }
-
+    private void prepareBitmaps() {
+        Drawable drawable = getDrawable(R.drawable.marker_victim);
+        assert drawable != null;
+        victimBitmap = BitmapDescriptorFactory.fromBitmap(((BitmapDrawable) drawable).getBitmap());
+        drawable = getDrawable(R.drawable.marker_food);
+        assert drawable != null;
+        foodBitmap = BitmapDescriptorFactory.fromBitmap(((BitmapDrawable) drawable).getBitmap());
+        drawable = getDrawable(R.drawable.marker_hospital);
+        assert drawable != null;
+        hospitalBitmap = BitmapDescriptorFactory.fromBitmap(((BitmapDrawable) drawable).getBitmap());
+        drawable = getDrawable(R.drawable.marker_volunteer);
+        assert drawable != null;
+        volunteerBitmap = BitmapDescriptorFactory.fromBitmap(((BitmapDrawable) drawable).getBitmap());
     }
+
+
 
     private void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -144,7 +165,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        mLocationRequest = new LocationRequest();
+        LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -197,4 +218,222 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             }
         }
     }
+
+    private void fetchLocationOfVictims() {
+        handlerVictims = new Handler();
+        runnerVictims = new Runnable() {
+            @Override
+            public void run() {
+                mClient = SaveMe.getAzureClient(MapActivity.this);
+                MobileServiceTable<VictimData> table = null;
+                if (mClient != null) {
+                    table = mClient.getTable(VictimData.class);
+                }
+
+                ListenableFuture<MobileServiceList<VictimData>> listenableFuture = table.where().field("status").eq("danger").execute();
+                Futures.addCallback(listenableFuture, new FutureCallback<MobileServiceList<VictimData>>() {
+                    @Override
+                    public void onSuccess(MobileServiceList<VictimData> result) {
+                        victimLocations = result;
+                        for (Object victimData : victimLocations) {
+                            VictimData data = (VictimData) victimData;
+
+                            if (lastLocationVictimHashmap.containsKey(data.getId())) {
+                                Marker marker = lastLocationVictimHashmap.get(data.getId());
+                                marker.setPosition(new LatLng(data.getCurrentLat(), data.getCurrentLong()));
+                            } else {
+                                MarkerOptions markerOptions = new MarkerOptions()
+                                        .position(new LatLng(data.getCurrentLat(), data.getCurrentLong()))
+                                        .title("Victim")
+                                        .snippet(data.getId())
+                                        .icon(victimBitmap);
+                                Marker marker = mMap.addMarker(markerOptions);
+                                lastLocationVictimHashmap.put(data.getId(), marker);
+                            }
+                            Log.e("location: ", data.getCurrentLat() + " " + data.getCurrentLong());
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Log.e("MapActivity:", "getting Victim Locations Failed: ", t);
+                    }
+                });
+
+                //Do something after 10 seconds
+                handlerVictims.postDelayed(this, 10000);
+            }
+        };
+        handlerVictims.post(runnerVictims);
+    }
+
+    private void fetchLocationOfVolunteers() {
+        handlerVolunteers = new Handler();
+        runnerVolunteers = new Runnable() {
+            @Override
+            public void run() {
+                mClient = SaveMe.getAzureClient(MapActivity.this);
+                MobileServiceTable<VolunteerData> table = null;
+                if (mClient != null) {
+                    table = mClient.getTable(VolunteerData.class);
+                }
+
+                ListenableFuture<MobileServiceList<VolunteerData>> listenableFuture = table.where().field("currentStatus").eq("working").execute();
+                Futures.addCallback(listenableFuture, new FutureCallback<MobileServiceList<VolunteerData>>() {
+                    @Override
+                    public void onSuccess(MobileServiceList<VolunteerData> result) {
+                        volunteerLocations = result;
+                        for (Object victimData : volunteerLocations) {
+                            VolunteerData data = (VolunteerData) victimData;
+
+                            if (lastLocationVolunteerHashmap.containsKey(data.getId())) {
+                                Marker marker = lastLocationVolunteerHashmap.get(data.getId());
+                                marker.setPosition(new LatLng(data.getCurrentLat(), data.getCurrentLong()));
+                            } else {
+                                MarkerOptions markerOptions = new MarkerOptions()
+                                        .position(new LatLng(data.getCurrentLat(), data.getCurrentLong()))
+                                        .title("Volunteer")
+                                        .snippet(data.getId())
+                                        .icon(volunteerBitmap);
+                                Marker marker = mMap.addMarker(markerOptions);
+                                lastLocationVolunteerHashmap.put(data.getId(), marker);
+                            }
+                            Log.e("location: Volunteers:", data.getCurrentLat() + " " + data.getCurrentLong());
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Log.e("MapActivity:", "getting Victim Locations Failed: ", t);
+                    }
+                });
+
+                //Do something after 10 seconds
+                handlerVictims.postDelayed(this, 10000);
+            }
+        };
+        handlerVictims.postDelayed(runnerVolunteers, 5000);
+    }
+
+
+    private void fetchLocationOfCamps() {
+
+        final Handler handler = new Handler();
+        Runnable r = () -> {
+            mClient = SaveMe.getAzureClient(MapActivity.this);
+            MobileServiceTable<CampData> table = null;
+            if (mClient != null) {
+                table = mClient.getTable(CampData.class);
+            }
+
+            ListenableFuture<MobileServiceList<CampData>> listenableFuture = table.where().execute();
+            Futures.addCallback(listenableFuture, new FutureCallback<MobileServiceList<CampData>>() {
+                @Override
+                public void onSuccess(MobileServiceList<CampData> result) {
+                    campLocations = result;
+
+                    for (Object campData : campLocations) {
+                        CampData data = (CampData) campData;
+                        MarkerOptions markerOptions = new MarkerOptions()
+                                .position(new LatLng(data.getLatitude(), data.getLongitude()))
+                                .title("Camp")
+                                .snippet(data.getId());
+                        if (data.getType().matches("Medical Help")) {
+                            markerOptions.icon(hospitalBitmap);
+                        } else if (data.getType().matches("Food Camp")) {
+                            markerOptions.icon(foodBitmap);
+                        }
+
+                        Log.e("location:camp: ", data.getLatitude() + " " + data.getLongitude());
+                        mMap.addMarker(markerOptions);
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.e("MapActivity:", "getting Victim Locations Failed: ", t);
+                }
+            });
+
+        };
+        handler.post(r);
+    }
+
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        switch (Objects.requireNonNull(marker.getTitle())) {
+            case "Victim":
+                Log.e("MapActivity:", "Victim Clicked");
+                marker.getSnippet();
+                break;
+            case "Volunteer":
+                Log.e("MapActivity:", "Volunteer Clicked");
+                break;
+            case "Camp":
+                Log.e("Map Activty:", "Camp Clicked");
+                break;
+        }
+
+        return false;
+    }
+
+    private void askLocationPermissions() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                Log.d(TAG, "Explanation for Permissions shown");
+
+                new AlertDialog.Builder(this)
+                        .setTitle("Access to Location")
+                        .setMessage("Location Permissions are necessary for this app to function so, that someone from our rescue team can come and help you.")
+                        .setPositiveButton("OK", (dialog, which) -> ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION))
+                        .show();
+            } else {
+                // No explanation needed; request the permission
+                Log.d(TAG, "Permission Requested");
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            // Permission has already been granted
+            Log.d(TAG, "Permission Granted");
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (handlerVictims != null) {
+            handlerVictims.post(runnerVictims);
+            handlerVolunteers.postDelayed(runnerVolunteers, 5000);
+        }
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (handlerVictims != null) {
+            handlerVictims.removeCallbacks(runnerVictims);
+            handlerVolunteers.removeCallbacks(runnerVolunteers);
+        }
+
+    }
 }
+
