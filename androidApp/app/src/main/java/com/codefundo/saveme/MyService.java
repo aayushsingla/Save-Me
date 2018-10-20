@@ -8,15 +8,16 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.codefundo.saveme.auth.LoginActivity;
 import com.codefundo.saveme.models.VictimData;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
 public class MyService extends Service {
     public MyService() {
+
     }
 
     @SuppressLint("MissingPermission")
@@ -28,12 +29,10 @@ public class MyService extends Service {
         String provider = locationManager.getBestProvider(criteria, false);
         Location location = locationManager.getLastKnownLocation(provider);
 
-        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        String deviceId = telephonyManager.getDeviceId();
-
         MobileServiceClient mClient = SaveMe.getAzureClient(this);
         MobileServiceTable<VictimData> table = mClient.getTable(VictimData.class);
-        table.where().field("id").eq(deviceId).execute((result, count, exception, response) -> {
+        table.where().field("id").eq(LoginActivity.getDeviceIMEI(this))
+                .execute((result, count, exception, response) -> {
             VictimData data;
             data = result.get(0);
             if (location != null) {

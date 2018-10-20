@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        startService(new Intent(this, MyService.class));
         mClient = SaveMe.getAzureClient(this);
 
         checkDataRefresh();
@@ -72,15 +73,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container_fragments, HomeFragment.newInstance(), "HomeFragment").commit();
+                        .replace(R.id.container_fragments, HomeFragment.newInstance(), "HomeFragment").commit();
                 break;
             case R.id.nav_contacts:
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container_fragments, HomeFragment.newInstance()).commit();
+                        .replace(R.id.container_fragments, HomeFragment.newInstance()).commit();
                 break;
             case R.id.nav_user:
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container_fragments, HomeFragment.newInstance()).commit();
+                        .replace(R.id.container_fragments, HomeFragment.newInstance()).commit();
                 break;
 
         }
