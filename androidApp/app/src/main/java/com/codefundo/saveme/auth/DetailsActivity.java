@@ -1,11 +1,8 @@
 package com.codefundo.saveme.auth;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -17,12 +14,15 @@ import com.codefundo.saveme.SaveMe;
 import com.codefundo.saveme.models.UserData;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.mobileservices.MobileServiceList;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 
 public class DetailsActivity extends AppCompatActivity implements View.OnClickListener {
     private UserData item = new UserData();
@@ -35,7 +35,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     private TextView emergencyNumber2Tv;
     private TextView bloodGroupTv;
     private ProgressBar progressBar;
-
+    private boolean firstSignIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //intiatilising the UI
+        //initialising the UI
         TextView skipButton = findViewById(R.id.btn_skip);
         TextView nextButton = findViewById(R.id.btn_save);
         addressTv = findViewById(R.id.et_address);
@@ -61,10 +61,42 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             getBasicData();
             pushToDatabase();
             startActivity(new Intent(DetailsActivity.this, MainActivity.class));
-
         });
         nextButton.setOnClickListener(this);
+        checkFirstSignUp();
+    }
 
+    private void checkFirstSignUp() {
+        MobileServiceClient mClient = SaveMe.getAzureClient(this);
+        MobileServiceTable<UserData> table = mClient.getTable(UserData.class);
+
+        ListenableFuture<MobileServiceList<UserData>> listenableFuture =
+                table.where().field("id").eq(LoginActivity.getDeviceIMEI(this)).execute();
+
+        Futures.addCallback(listenableFuture, new FutureCallback<MobileServiceList<UserData>>() {
+            @Override
+            public void onSuccess(MobileServiceList<UserData> result) {
+                if (result.getTotalCount() > 0) {
+                    UserData data = result.get(0);
+                    addressTv.setText(data.getAddress());
+                    cityTv.setText(data.getCity());
+                    stateTv.setText(data.getState());
+                    pincodeTv.setText(data.getPincode());
+                    emergencyNumber1Tv.setText(data.getEmergencyNumber1());
+                    emergencyNumber2Tv.setText(data.getEmergencyNumber2());
+                    contactNumberTv.setText(data.getContactNumber());
+                    bloodGroupTv.setText(data.getBloodGroup());
+                    firstSignIn = false;
+                } else {
+                    firstSignIn = true;
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+
+            }
+        });
     }
 
     @Override
@@ -88,31 +120,41 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
     private void getBasicData() {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        if (account != null) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-                TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                String deviceId = telephonyManager.getDeviceId();
-                item.setId(deviceId);
-
-            }
-            item.setName(account.getDisplayName());
-            item.setEmailAddress(account.getEmail());
-            item.setPhotoUrl(account.getPhotoUrl().toString());
-            item.setAzureId(LoginActivity.getCurrentUserUniqueId(this));
-            item.setMemberType("User");
-        }
+        item.setId(LoginActivity.getDeviceIMEI(this));
+        item.setName(account.getDisplayName());
+        item.setEmailAddress(account.getEmail());
+        item.setPhotoUrl(account.getPhotoUrl().toString());
+        item.setAzureId(LoginActivity.getCurrentUserUniqueId(this));
+        item.setMemberType("User");
     }
 
     private void pushToDatabase() {
         MobileServiceClient mClient = SaveMe.getAzureClient(this);
         if (mClient != null) {
             MobileServiceTable<UserData> table = mClient.getTable(UserData.class);
-            table.insert(item, (entity, exception, response) -> {
-                startActivity(new Intent(this, MainActivity.class));
-                finish();
-            });
-        }
+            ListenableFuture<UserData> listenableFuture;
+            if (firstSignIn) {
+                listenableFuture = table.insert(item);
+                Log.e("TAG", "inserted");
+            } else {
+                listenableFuture = table.update(item);
+                Log.e("TAG", "updated");
+            }
 
+            Futures.addCallback(listenableFuture, new FutureCallback<UserData>() {
+                @Override
+                public void onSuccess(UserData result) {
+                    startActivity(new Intent(DetailsActivity.this, MainActivity.class));
+                    finish();
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.e("DetailsActivity:", "Inserting item in the database failed");
+                }
+            });
+
+        }
     }
 
 }

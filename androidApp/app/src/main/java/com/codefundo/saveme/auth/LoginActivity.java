@@ -1,11 +1,14 @@
 package com.codefundo.saveme.auth;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -34,13 +37,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 
 public class LoginActivity extends AppCompatActivity {
+    private static final int REQUEST_CODE_IMEI_PERMISSION = 2336;
+    private static final int RC_SIGN_IN = 123;
     public static final String SHAREDPREFFILE = "temp";
     public static final String USERIDPREF = "uid";
     public static final String TOKENPREF = "tkn";
-    private static final int RC_SIGN_IN = 123;
     private static final String CLIENT_ID_WEB_APPS = "434305193965-h324ch2gd4d6jvfkn8rgdf4ih2os61cr.apps.googleusercontent.com";
     private MobileServiceClient mClient;
     private ProgressBar progressBar;
@@ -53,6 +59,14 @@ public class LoginActivity extends AppCompatActivity {
     public static String getCurrentUserToken(Context mContext) {
         SharedPreferences prefs = mContext.getSharedPreferences(SHAREDPREFFILE, Context.MODE_PRIVATE);
         return prefs.getString(TOKENPREF, null);
+    }
+
+    public static String getDeviceIMEI(Context mContext) {
+        TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            return null;
+        }
+        return telephonyManager.getDeviceId();
     }
 
     @Override
@@ -127,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(MobileServiceUser result) {
                 hideShowProgressBar();
                 cacheUserToken(result);
-                createAndShowDialog("Login Successful: ", "Logged in to the mobile services as " + result.getUserId(), true);
+                askIMEIPermissions();
             }
 
             @Override
@@ -201,6 +215,59 @@ public class LoginActivity extends AppCompatActivity {
         client.setCurrentUser(user);
 
         return true;
+    }
+
+    private void askIMEIPermissions() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_PHONE_STATE)) {
+                Log.d("TAG", "Explanation for Permissions shown");
+
+                new android.app.AlertDialog.Builder(this)
+                        .setTitle("Access to Location")
+                        .setMessage("IMEI Id of ypur device is needed to uniquely identify you and track your location.")
+                        .setPositiveButton("OK", (dialog, which) -> ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_CODE_IMEI_PERMISSION))
+                        .show();
+            } else {
+                // No explanation needed; request the permission
+                Log.d("Tag", "Permission Requested");
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_CODE_IMEI_PERMISSION);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            createAndShowDialog("Login Successful: ", "Logged in to the mobile services", true);
+            // Permission has already been granted
+            Log.d("Tag", "Permission Granted");
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_IMEI_PERMISSION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    createAndShowDialog("Login Successful: ", "Logged in to the mobile services", true);
+                } else {
+                    Log.e("Tag", "Permissions couldn't be granted");
+                    finish();
+                }
+                break;
+            }
+        }
     }
 
 }

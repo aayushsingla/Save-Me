@@ -23,6 +23,5 @@ public class SaveMe extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
     }
 }
