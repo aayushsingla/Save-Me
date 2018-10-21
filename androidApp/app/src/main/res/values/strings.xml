@@ -22,5 +22,9 @@
     <string name="title_activity_login_activity">LoginActivity</string>
     <string name="skip"><u>Skip</u></string>
     <string name="title_activity_admin_activity">Admin Activity</string>
+    <string name="title_activity_qrcode_scanner_activty">QRCodeScannerActivty</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

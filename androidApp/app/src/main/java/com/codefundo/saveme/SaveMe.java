@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 
 import java.net.MalformedURLException;
@@ -23,5 +24,6 @@ public class SaveMe extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fresco.initialize(this);
     }
 }

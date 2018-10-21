@@ -13,25 +13,25 @@
         android:id="@+id/drawee_view"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        app:placeholderImage="@drawable/image_victim_card"
+        app:placeholderImage="@drawable/image_report_card"
         app:roundedCornerRadius="20dp" />
 
     <TextView
-        android:layout_width="match_parent"
         style="@style/TextStyleShadow"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/opensans_bold_extra"
         android:gravity="top|center"
-        android:text="Caught Somewhere? \n Let us Help you"
+        android:text="Report Someone Missing"
         android:textColor="@android:color/white"
         android:textSize="24sp"
         android:textStyle="bold" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
+        android:layout_gravity="bottom|center"
         android:layout_margin="16dp"
         android:orientation="horizontal">
 
@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/opensans_bold_extra"
-            android:text="2988"
+            android:text="150"
             android:textColor="@android:color/white"
             android:textSize="42dp"
             android:textStyle="bold" />
@@ -52,7 +52,7 @@
             android:layout_marginStart="16dp"
             android:fontFamily="@font/opensans_regular"
             android:padding="4dp"
-            android:text="people were in danger \n and still counting......"
+            android:text="people reported missing......"
             android:textColor="@android:color/white"
             android:textSize="18dp" />
 

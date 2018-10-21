@@ -1,4 +1,4 @@
-package com.codefundo.saveme.rescueteam;
+package com.codefundo.saveme.donations;
 
 
 import android.content.Intent;
@@ -16,11 +16,11 @@ import androidx.fragment.app.Fragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RescueFragment extends Fragment implements View.OnClickListener {
+public class DonationFragment extends Fragment implements View.OnClickListener {
 
     private MaterialCardView selfCard;
 
-    public RescueFragment() {
+    public DonationFragment() {
         // Required empty public constructor
     }
 
@@ -30,8 +30,8 @@ public class RescueFragment extends Fragment implements View.OnClickListener {
      *
      * @return A new instance of fragment EateriesCardFragment.
      */
-    public static RescueFragment newInstance() {
-        return new RescueFragment();
+    public static DonationFragment newInstance() {
+        return new DonationFragment();
     }
 
 
@@ -39,7 +39,7 @@ public class RescueFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        selfCard = (MaterialCardView) inflater.inflate(R.layout.fragment_rescue,
+        selfCard = (MaterialCardView) inflater.inflate(R.layout.fragment_donations,
                 container, false);
         return selfCard;
     }
@@ -59,8 +59,8 @@ public class RescueFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(final View view) {
-        final Intent rescueActivityInntent = new Intent(view.getContext(), QRCodeScannerActivity.class);
-        startActivity(rescueActivityInntent);
+        final Intent donationActivityIntent = new Intent(view.getContext(), DonationActivity.class);
+        startActivity(donationActivityIntent);
     }
 
 

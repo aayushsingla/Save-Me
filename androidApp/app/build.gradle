@@ -55,6 +55,10 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.microsoft.azure:azure-mobile-android:3.4.0'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
+    implementation 'com.google.zxing:core:3.2.1'
+    implementation 'com.facebook.fresco:fresco:1.11.0'
+
 
 }
 apply plugin: 'com.google.gms.google-services'

@@ -11,40 +11,44 @@ import com.codefundo.saveme.models.UserData;
 import com.codefundo.saveme.models.VictimData;
 import com.codefundo.saveme.models.VolunteerData;
 import com.codefundo.saveme.victimpanel.MapActivity;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
 import java.util.Random;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+import static com.google.android.material.bottomappbar.BottomAppBar.FAB_ALIGNMENT_MODE_END;
+
+public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuItemClickListener {
 
     private MobileServiceClient mClient;
+    BottomAppBar bar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        bar = findViewById(R.id.bar);
+        setSupportActionBar(bar);
         startService(new Intent(this, MyService.class));
         mClient = SaveMe.getAzureClient(this);
 
-        checkDataRefresh();
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, MapActivity.class)));
 
-        BottomNavigationView mBottomNavigationView = findViewById(R.id.bottom_navigation);
-        mBottomNavigationView.setOnNavigationItemSelectedListener(this);
-        mBottomNavigationView.setSelectedItemId(R.id.nav_home);
+        bar.setOnMenuItemClickListener(this);
 
         //pushVictimData();
         //pushCampData();
         //pushVolunteerData();
+        //checkDataRefresh();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container_fragments, HomeFragment.newInstance(), "HomeFragment").commit();
+
     }
 
     @Override
@@ -52,17 +56,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     public void checkDataRefresh() {
@@ -132,23 +125,29 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
 
     }
+
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.nav_home:
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.container_fragments, HomeFragment.newInstance(), "HomeFragment").commit();
                 break;
-            case R.id.nav_contacts:
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container_fragments, HomeFragment.newInstance()).commit();
-                break;
             case R.id.nav_user:
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container_fragments, HomeFragment.newInstance()).commit();
+                        .replace(R.id.container_fragments, UserFragment.newInstance(), "UserFragment").commit();
                 break;
 
         }
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (bar.getFabAlignmentMode() == FAB_ALIGNMENT_MODE_END) {
+            bar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
+        } else {
+            super.onBackPressed();
+        }
     }
 }
