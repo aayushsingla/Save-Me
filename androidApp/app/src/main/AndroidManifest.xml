@@ -88,7 +88,9 @@
         <service
             android:name=".MyService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true">
+
+        </service>
 
         <activity
             android:name=".rescueteam.QRCodeScannerActivity"
@@ -96,6 +98,16 @@
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
+
+        <activity
+            android:name=".donations.DonationActivity"
+            android:label="Donate"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".report.ReportActivity"
+            android:label="Report Missing"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

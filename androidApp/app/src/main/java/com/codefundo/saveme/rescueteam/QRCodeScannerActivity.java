@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.codefundo.saveme.R;
 import com.codefundo.saveme.SaveMe;
+import com.codefundo.saveme.auth.LoginActivity;
 import com.codefundo.saveme.models.VictimData;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -100,6 +101,8 @@ public class QRCodeScannerActivity extends AppCompatActivity {
                 if (result.getTotalCount() > 0) {
                     VictimData victimData = result.get(0);
                     victimData.setStatus("safe");
+                    victimData.setSavedBy(LoginActivity.getDeviceIMEI(QRCodeScannerActivity.this));
+                    victimData.setSavedByUUID(LoginActivity.getCurrentUserUniqueId(QRCodeScannerActivity.this));
                     ListenableFuture<VictimData> lf = table.update(victimData);
                     Futures.addCallback(lf, new FutureCallback<VictimData>() {
                         @Override

@@ -7,15 +7,26 @@
     android:layout_margin="10dp"
     app:cardCornerRadius="20dp"
     app:cardElevation="2dp"
-    tools:context=".rescueteam.RescueFragment">
+    tools:context=".victimpanel.VictimActivity">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/drawee_view"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:placeholderImage="@drawable/image_admin_card"
+        app:roundedCornerRadius="20dp" />
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp"
+        style="@style/TextStyleShadow"
         android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="@font/opensans_bold_extra"
         android:text="Admin Controls"
-        android:textColor="@android:color/black"
-        android:textSize="24sp" />
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
 
 </com.google.android.material.card.MaterialCardView>

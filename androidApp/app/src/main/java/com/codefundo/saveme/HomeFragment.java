@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.codefundo.saveme.admin.AdminFragment;
+import com.codefundo.saveme.donations.DonationFragment;
+import com.codefundo.saveme.report.ReportFragment;
 import com.codefundo.saveme.rescueteam.RescueFragment;
 import com.codefundo.saveme.victimpanel.VictimFragment;
 
@@ -20,6 +22,8 @@ public class HomeFragment extends Fragment {
     private final static String TAG_RESCUE_FRAGMENT = "RescueFragment";
     private final static String TAG_VICTIM_FRAGMENT = "VictimFragment";
     private static final String TAG_ADMIN_FRAGMENT = "AdminFragment";
+    private static final String TAG_REPORT_FRAGMENT = "ReportFragment";
+    private static final String TAG_DONATION_FRAGMENT = "DonationFragment";
 
     public HomeFragment() {
         // Required empty public constructor
@@ -49,6 +53,8 @@ public class HomeFragment extends Fragment {
         if (featuresFragManager.getFragments().size() == 0) {
             fragmentTransaction.add(R.id.container_fragments_home, new VictimFragment(), TAG_VICTIM_FRAGMENT);
             fragmentTransaction.add(R.id.container_fragments_home, new RescueFragment(), TAG_RESCUE_FRAGMENT);
+            fragmentTransaction.add(R.id.container_fragments_home, new DonationFragment(), TAG_DONATION_FRAGMENT);
+            fragmentTransaction.add(R.id.container_fragments_home, new ReportFragment(), TAG_REPORT_FRAGMENT);
             fragmentTransaction.add(R.id.container_fragments_home, new AdminFragment(), TAG_ADMIN_FRAGMENT);
             fragmentTransaction.commit();
         }

@@ -21,8 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:elevation="8dp"
-        app:hideOnScroll="true"
-        app:navigationIcon="@drawable/ic_menu24" />
+        app:hideOnScroll="true" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

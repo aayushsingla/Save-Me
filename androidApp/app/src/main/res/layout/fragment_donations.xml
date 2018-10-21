@@ -7,23 +7,23 @@
     android:layout_margin="10dp"
     app:cardCornerRadius="20dp"
     app:cardElevation="2dp"
-    tools:context=".rescueteam.RescueActivity">
+    tools:context=".donations.DonationActivity">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/drawee_view"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        app:placeholderImage="@drawable/image_volunteer_card"
+        app:placeholderImage="@drawable/image_donations_card"
         app:roundedCornerRadius="20dp" />
 
     <TextView
-        android:layout_width="match_parent"
         style="@style/TextStyleShadow"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/opensans_bold_extra"
         android:gravity="top|center"
-        android:text="The Rescue Team"
+        android:text="Donate to the needy"
         android:textColor="@android:color/white"
         android:textSize="30sp"
         android:textStyle="bold" />
@@ -33,13 +33,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:layout_margin="16dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="0.5"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
             <TextView
                 style="@style/TextStyleShadow"
@@ -47,9 +47,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/opensans_bold_extra"
-                android:text="360"
+                android:text="100000"
                 android:textColor="@android:color/white"
-                android:textSize="40dp"
+                android:textSize="28dp"
                 android:textStyle="bold" />
 
             <TextView
@@ -57,19 +57,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:layout_marginStart="10dp"
                 android:fontFamily="@font/opensans_regular"
                 android:gravity="center"
-                android:text="Volunteers"
+                android:text="People Donated"
                 android:textColor="@android:color/white"
-                android:textSize="18dp" />
+                android:textSize="21dp" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="0.5"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
             <TextView
                 style="@style/TextStyleShadow"
@@ -77,9 +78,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/opensans_bold_extra"
-                android:text="1000"
+                android:text="100000000"
                 android:textColor="@android:color/white"
-                android:textSize="40dp"
+                android:textSize="28dp"
                 android:textStyle="bold" />
 
             <TextView
@@ -87,10 +88,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:layout_marginStart="10dp"
                 android:fontFamily="@font/opensans_regular"
-                android:text="people saved"
+                android:gravity="center"
+                android:text="Collected"
                 android:textColor="@android:color/white"
-                android:textSize="18dp" />
+                android:textSize="21dp" />
 
         </LinearLayout>
 
