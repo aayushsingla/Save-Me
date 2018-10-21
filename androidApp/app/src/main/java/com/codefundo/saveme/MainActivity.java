@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 break;
             case R.id.nav_user:
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container_fragments, HomeFragment.newInstance()).commit();
+                        .replace(R.id.container_fragments, UserFragment.newInstance(), "UserFragment").commit();
                 break;
 
         }
