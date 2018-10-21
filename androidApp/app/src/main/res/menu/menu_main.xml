@@ -2,9 +2,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.codefundo.saveme.MainActivity">
+
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_dashboard_black_24dp"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:title="Home"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/nav_user"
+        android:icon="@drawable/ic_account_circle_black_24dp"
+        android:orderInCategory="100"
+        android:title="User"
+        app:showAsAction="always" />
 </menu>

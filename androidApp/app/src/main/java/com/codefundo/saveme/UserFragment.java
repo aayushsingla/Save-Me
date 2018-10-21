@@ -53,7 +53,8 @@ public class UserFragment extends Fragment {
         String azureId = LoginActivity.getCurrentUserUniqueId(Objects.requireNonNull(getContext()));
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
-        nameTv.setText(account.getDisplayName());
+        if (account != null)
+            nameTv.setText(account.getDisplayName());
         idTv.setText(id);
         try {
             imageView.setImageBitmap(getQRCodeImage(id, azureId));

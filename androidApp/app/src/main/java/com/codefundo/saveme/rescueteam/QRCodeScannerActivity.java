@@ -37,6 +37,8 @@ public class QRCodeScannerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_qrcode_scanner);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
         //intializing scan object
         CardView cardView = findViewById(R.id.btn_scan);
         TextInputEditText textInputEditText = findViewById(R.id.et_imei);
@@ -87,6 +89,7 @@ public class QRCodeScannerActivity extends AppCompatActivity {
     }
 
     private void handleResults(String imei) {
+
         MobileServiceClient mClient = SaveMe.getAzureClient(this);
         MobileServiceTable<VictimData> table = mClient.getTable(VictimData.class);
         ListenableFuture<MobileServiceList<VictimData>> listenableFuture =
@@ -102,7 +105,7 @@ public class QRCodeScannerActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(VictimData result) {
                             Log.e("Tag", "update succeeded");
-
+                            Toast.makeText(QRCodeScannerActivity.this, "Marked Safe", Toast.LENGTH_LONG).show();
                         }
 
                         @Override
@@ -131,7 +134,6 @@ public class QRCodeScannerActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
 
