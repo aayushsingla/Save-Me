@@ -36,11 +36,12 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/stats"
             style="@style/TextStyleShadow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/opensans_bold_extra"
-            android:text="2988"
+            android:text="XXXX"
             android:textColor="@android:color/white"
             android:textSize="42dp"
             android:textStyle="bold" />

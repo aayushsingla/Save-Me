@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.codefundo.saveme.KillableRunnable;
 import com.codefundo.saveme.R;
 import com.codefundo.saveme.SaveMe;
 import com.codefundo.saveme.auth.LoginActivity;
@@ -57,7 +58,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     private final String TAG = MapActivity.class.getSimpleName();
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
     private MobileServiceClient mClient;
     private MobileServiceList campLocations;
     private BitmapDescriptor victimBitmap;
@@ -70,8 +70,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     private MobileServiceList volunteerLocations;
     private Handler handlerVictims;
     private Handler handlerVolunteers;
-    private Runnable runnerVictims;
-    private Runnable runnerVolunteers;
+    private KillableRunnable runnerVictims;
+    private KillableRunnable runnerVolunteers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,7 +192,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     @Override
     public void onLocationChanged(Location location) {
-        mLastLocation = location;
+        Location mLastLocation = location;
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         sendLocationToDb(latLng);
         CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -260,9 +260,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     private void fetchLocationOfVictims() {
         handlerVictims = new Handler();
-        runnerVictims = new Runnable() {
+        runnerVictims = new KillableRunnable() {
             @Override
-            public void run() {
+            public void doWork() {
                 mClient = SaveMe.getAzureClient(MapActivity.this);
                 MobileServiceTable<VictimData> table = null;
                 if (mClient != null) {
@@ -309,9 +309,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     private void fetchLocationOfVolunteers() {
         handlerVolunteers = new Handler();
-        runnerVolunteers = new Runnable() {
+        runnerVolunteers = new KillableRunnable() {
             @Override
-            public void run() {
+            public void doWork() {
                 mClient = SaveMe.getAzureClient(MapActivity.this);
                 MobileServiceTable<VolunteerData> table = null;
                 if (mClient != null) {
@@ -323,8 +323,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                     @Override
                     public void onSuccess(MobileServiceList<VolunteerData> result) {
                         volunteerLocations = result;
-                        for (Object victimData : volunteerLocations) {
-                            VolunteerData data = (VolunteerData) victimData;
+                        for (Object volunteerData : volunteerLocations) {
+                            VolunteerData data = (VolunteerData) volunteerData;
 
                             if (lastLocationVolunteerHashmap.containsKey(data.getId())) {
                                 Marker marker = lastLocationVolunteerHashmap.get(data.getId());
@@ -340,7 +340,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                             }
                             Log.e("location: Volunteers:", data.getCurrentLat() + " " + data.getCurrentLong());
                         }
-
                     }
 
                     @Override
@@ -348,12 +347,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                         Log.e("MapActivity:", "getting Victim Locations Failed: ", t);
                     }
                 });
-
                 //Do something after 10 seconds
-                handlerVictims.postDelayed(this, 10000);
+                handlerVolunteers.postDelayed(this, 10000);
             }
         };
-        handlerVictims.postDelayed(runnerVolunteers, 5000);
+        handlerVolunteers.postDelayed(runnerVolunteers, 5000);
     }
 
 
@@ -460,7 +458,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         super.onResume();
         if (handlerVictims != null) {
             handlerVictims.post(runnerVictims);
+            runnerVictims.restart();
             handlerVolunteers.postDelayed(runnerVolunteers, 5000);
+            runnerVolunteers.restart();
         }
 
     }
@@ -470,7 +470,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         super.onStop();
         if (handlerVictims != null) {
             handlerVictims.removeCallbacks(runnerVictims);
+            runnerVictims.kill();
             handlerVolunteers.removeCallbacks(runnerVolunteers);
+            runnerVolunteers.kill();
         }
 
     }
