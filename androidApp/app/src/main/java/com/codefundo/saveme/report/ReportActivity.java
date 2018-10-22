@@ -9,6 +9,7 @@ import com.codefundo.saveme.KillableRunnable;
 import com.codefundo.saveme.R;
 import com.codefundo.saveme.SaveMe;
 import com.codefundo.saveme.models.MissingPeopleData;
+import com.codefundo.saveme.models.UserData;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -27,7 +28,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ReportActivity extends AppCompatActivity {
-    private MobileServiceList<MissingPeopleData> serviceList;
     private ArrayList<MissingPeopleData> list=new ArrayList<>(0);
     private FormAdapter formAdapter;
     private Handler handler;
@@ -41,17 +41,11 @@ public class ReportActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
-        serviceList= new MobileServiceList<>(list, 0);
-        MissingPeopleData missingPeopleData=new MissingPeopleData();
-        missingPeopleData.setName("Aayush Singla");
-        missingPeopleData.setAge(18);
-        serviceList.add(missingPeopleData);
-        Log.e("Tag:count",""+serviceList.getTotalCount());
         FloatingActionButton fab=findViewById(R.id.fab);
         fab.setOnClickListener(v -> startActivity(new Intent(ReportActivity.this,FormActivity.class)));
 
         RecyclerView recyclerView=findViewById(R.id.recyclerview);
-        formAdapter= new FormAdapter(serviceList);
+        formAdapter= new FormAdapter(list);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this,RecyclerView.VERTICAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(formAdapter);
@@ -66,11 +60,12 @@ public class ReportActivity extends AppCompatActivity {
             public void doWork() {
                 MobileServiceClient mClient= SaveMe.getAzureClient(ReportActivity.this);
                 MobileServiceTable<MissingPeopleData> table=mClient.getTable(MissingPeopleData.class);
-                ListenableFuture<MobileServiceList<MissingPeopleData>> listListenableFuture= table.where().execute();
+                ListenableFuture<MobileServiceList<MissingPeopleData>> listListenableFuture= table.where().field("status").eq("missing").execute();
                 Futures.addCallback(listListenableFuture, new FutureCallback<MobileServiceList<MissingPeopleData>>() {
                     @Override
                     public void onSuccess(MobileServiceList<MissingPeopleData> result) {
-                        serviceList=result;
+                        list.clear();
+                        list.addAll(result);
                         formAdapter.notifyDataSetChanged();
                     }
 
@@ -80,7 +75,7 @@ public class ReportActivity extends AppCompatActivity {
                     }
                 });
 
-                handler.postDelayed(killableRunnable,60000);
+                handler.postDelayed(killableRunnable,10000);
             }
         };
         handler.post(killableRunnable);

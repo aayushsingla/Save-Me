@@ -3,10 +3,10 @@ package com.codefundo.saveme.models;
 public class MissingPeopleData {
     private String id;
     private String name;
-    private int age;
+    private String age;
+    private String gender;
     private String emailAddress;
     private String photoUrl;
-    private String memberType;
     private String status; // "missing" or "found"
 
     //details
@@ -39,11 +39,11 @@ public class MissingPeopleData {
         this.name = name;
     }
 
-    public int getAge() {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(String age) {
         this.age = age;
     }
 
@@ -61,14 +61,6 @@ public class MissingPeopleData {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
-    }
-
-    public String getMemberType() {
-        return memberType;
-    }
-
-    public void setMemberType(String memberType) {
-        this.memberType = memberType;
     }
 
     public String getAddress() {
@@ -158,5 +150,15 @@ public class MissingPeopleData {
     public void setStatus(String status) {
         this.status = status;
     }
+
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
 
 }

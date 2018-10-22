@@ -8,13 +8,15 @@ import com.codefundo.saveme.R;
 import com.codefundo.saveme.models.MissingPeopleData;
 import com.microsoft.windowsazure.mobileservices.MobileServiceList;
 
+import java.util.ArrayList;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class FormAdapter extends RecyclerView.Adapter<FormViewHolder> {
-    private MobileServiceList<MissingPeopleData> missingPeopleData;
+    private ArrayList<MissingPeopleData> missingPeopleData;
 
-    public FormAdapter(MobileServiceList<MissingPeopleData> missingPeopleData){
+    public FormAdapter(ArrayList<MissingPeopleData> missingPeopleData){
         this.missingPeopleData=missingPeopleData;
     }
 
@@ -33,6 +35,6 @@ public class FormAdapter extends RecyclerView.Adapter<FormViewHolder> {
 
     @Override
     public int getItemCount() {
-        return missingPeopleData.getTotalCount();
+        return missingPeopleData.size();
     }
 }

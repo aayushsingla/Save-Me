@@ -73,6 +73,19 @@
                         android:layout_height="wrap_content">
 
                         <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_gender"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Gender (Male/Female)"
+                            android:inputType="text" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/et_address"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -132,8 +145,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Your Relation with the Victim"
-                            android:inputType="number"
-                            android:maxLength="6" />
+                            android:inputType="text" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -143,11 +155,11 @@
                         app:errorEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_contact_number"
+                            android:id="@+id/et_victim_contact_number"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Victim's Contact Number"
-                            android:inputType="phone" />
+                            android:inputType="text" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -157,7 +169,7 @@
                         app:errorEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_emergency_number_2"
+                            android:id="@+id/et_reporter_contact_number"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Your Contact Number"
@@ -172,6 +184,7 @@
             </androidx.cardview.widget.CardView>
 
             <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/image_victim"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_gravity="center|top"
@@ -208,5 +221,11 @@
         android:foregroundGravity="center"
         app:layout_anchor="@id/bar" />
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
