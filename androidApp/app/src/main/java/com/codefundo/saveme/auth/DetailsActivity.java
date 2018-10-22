@@ -14,6 +14,7 @@ import com.codefundo.saveme.SaveMe;
 import com.codefundo.saveme.models.UserData;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -46,7 +47,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
         //initialising the UI
         TextView skipButton = findViewById(R.id.btn_skip);
-        TextView nextButton = findViewById(R.id.btn_save);
+        FloatingActionButton nextButton = findViewById(R.id.fab);
         addressTv = findViewById(R.id.et_address);
         cityTv = findViewById(R.id.et_city);
         stateTv = findViewById(R.id.et_state);

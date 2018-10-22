@@ -106,8 +106,10 @@
 
         <activity
             android:name=".report.ReportActivity"
-            android:label="Report Missing"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="Report Someone"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>
