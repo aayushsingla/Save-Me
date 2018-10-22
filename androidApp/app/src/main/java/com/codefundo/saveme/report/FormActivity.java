@@ -2,6 +2,7 @@ package com.codefundo.saveme.report;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -25,15 +26,23 @@ import com.codefundo.saveme.R;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.microsoft.azure.storage.CloudStorageAccount;
+import com.microsoft.azure.storage.blob.CloudBlobClient;
+import com.microsoft.azure.storage.blob.CloudBlobContainer;
+import com.microsoft.azure.storage.blob.CloudBlockBlob;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.Objects;
 import java.util.Random;
 
 public class FormActivity extends AppCompatActivity {
+    private static final String storageContainer = "userphotos";
+    private static final String storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=storagesaveme;AccountKey=4YVDjsZedzabij1hh9Yf1OyF5NP4H/pFTWFk8CB7gjKWzg8eD65lsizghfo0qnD/phBRN7bHGhCGMAjd7I939g==;EndpointSuffix=core.windows.net";
     private TextView nameTv;
     private TextView ageTv;
     private TextView addressTv;
@@ -47,6 +56,7 @@ public class FormActivity extends AppCompatActivity {
     private String photoUrl="";
     private ProgressBar progressBar;
     private SimpleDraweeView simpleDraweeView;
+    private String filePath="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +71,12 @@ public class FormActivity extends AppCompatActivity {
         .setMessage("Clicking submit will report the missing victim to us." +
                 "Please verify all the details provided carefully." +
                 "Details once provided cannot be changed")
-        .setPositiveButton("Submit", (dialog, which) -> pushUserData())
+        .setPositiveButton("Submit", (dialog, which) -> {
+            if(!filePath.matches(""))
+                storeImageInBlobStorage(filePath);
+            else
+                pushUserData(Long.toHexString((new Random()).nextLong()));
+        })
         .setNegativeButton("cancel", (dialog, which) -> {})
         .show());
 
@@ -89,13 +104,11 @@ public class FormActivity extends AppCompatActivity {
 
     }
 
-    private void pushUserData() {
-        hideShowProgressBar();
+    private void pushUserData(String id) {
         MobileServiceClient mobileServiceClient= SaveMe.getAzureClient(this);
         MobileServiceTable<MissingPeopleData> table=mobileServiceClient.getTable(MissingPeopleData.class);
         MissingPeopleData missingPeopleData=new MissingPeopleData();
-        Random random = new Random();
-        missingPeopleData.setId(Long.toHexString(random.nextLong()));
+        missingPeopleData.setId(id);
         missingPeopleData.setName(nameTv.getText().toString()+"");
         missingPeopleData.setAge(ageTv.getText().toString()+"");
         missingPeopleData.setGender(genderTv.getText().toString()+"");
@@ -151,12 +164,12 @@ public class FormActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            String filePath = Objects.requireNonNull(data.getData()).getPath(); // "/mnt/sdcard/FileName.mp3"
-
+            filePath=PathUtil.getPath(this,data.getData());
             if (filePath != null) {
                 Log.e("filePath:",filePath);
                 simpleDraweeView.setImageURI(data.getData());
             } else {
+                filePath="";
                 Toast.makeText(this, "Problem Selecting File.Please check if that file actually exists on your device.", Toast.LENGTH_LONG).show();
             }
         } else if (resultCode == RESULT_CANCELED) {
@@ -164,4 +177,42 @@ public class FormActivity extends AppCompatActivity {
         }
     }
 
+    protected void storeImageInBlobStorage(String imgPath){
+        hideShowProgressBar();
+        StrictMode.setThreadPolicy(
+                new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
+
+        try
+        {
+            Log.e("Upload",1+"");
+            // Retrieve storage account from connection-string.
+            CloudStorageAccount storageAccount = CloudStorageAccount.parse(storageConnectionString);
+            Log.e("Upload",2+"");
+
+            // Create the blob client.
+            CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
+            Log.e("Upload",3+"");
+
+            // Retrieve reference to a previously created container.
+            CloudBlobContainer container = blobClient.getContainerReference(storageContainer);
+            Log.e("Upload",4+"");
+            Random random = new Random();
+            String id=Long.toHexString(random.nextLong());
+            // Create or overwrite the blob (with the name "example.jpeg") with contents from a local file.
+            CloudBlockBlob blob = container.getBlockBlobReference(id);
+            Log.e("Upload",5+"");
+            File source = new File(imgPath);
+            Log.e("Upload",6+"");
+            blob.upload(new FileInputStream(source), source.length());
+            Log.e("Upload",7+"");
+            photoUrl="https://storagesaveme.blob.core.windows.net/userphotos/"+id;
+            pushUserData(id);
+            Log.e("Upload",8+"");
+        }
+        catch (Exception e)
+        {
+            Log.e("Upload",e.getMessage());
+        }
+    }
 }
