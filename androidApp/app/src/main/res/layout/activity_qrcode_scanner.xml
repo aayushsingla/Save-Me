@@ -8,9 +8,18 @@
     android:backgroundTint="@android:color/white"
     tools:context=".rescueteam.QRCodeScannerActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        app:title="Mark People Safe"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@android:color/white"
+        app:navigationIcon="@drawable/ic_arrow_back"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/white"
         android:layout_marginTop="?actionBarSize"
         android:layout_marginBottom="?actionBarSize"
         android:orientation="vertical">

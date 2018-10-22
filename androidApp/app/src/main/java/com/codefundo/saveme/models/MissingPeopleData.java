@@ -7,6 +7,7 @@ public class MissingPeopleData {
     private String emailAddress;
     private String photoUrl;
     private String memberType;
+    private String status; // "missing" or "found"
 
     //details
     //optional information
@@ -148,6 +149,14 @@ public class MissingPeopleData {
 
     public void setReportedById(String reportedById) {
         this.reportedById = reportedById;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }

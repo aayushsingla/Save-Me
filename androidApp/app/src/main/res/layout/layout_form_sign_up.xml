@@ -189,7 +189,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:elevation="12dp"
-        android:foreground="@drawable/ic_keyboard_arrow_right_black_24dp"
+        android:foreground="@drawable/ic_check_24dp"
         android:foregroundGravity="center"
         app:layout_anchor="@id/bar" />
 

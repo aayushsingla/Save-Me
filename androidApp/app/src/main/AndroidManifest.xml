@@ -30,9 +30,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".rescueteam.RescueActivity"
             android:label="@string/activity_rescue_team"
@@ -76,9 +74,7 @@
         <activity
             android:name=".auth.DetailsActivity"
             android:label="User Details"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".admin.AdminActivity"
             android:label="@string/title_activity_admin_activity"
@@ -88,28 +84,24 @@
         <service
             android:name=".MyService"
             android:enabled="true"
-            android:exported="true">
-
-        </service>
+            android:exported="true"></service>
 
         <activity
             android:name=".rescueteam.QRCodeScannerActivity"
             android:label="@string/title_activity_qrcode_scanner_activty"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".donations.DonationActivity"
             android:label="Donate"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".report.ReportActivity"
             android:label="Report Someone"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".report.FormActivity"
+            android:label="@string/title_activity_form"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
