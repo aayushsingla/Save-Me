@@ -42,6 +42,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/stat_volunteer"
                 style="@style/TextStyleShadow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -72,6 +73,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/stat_victim"
                 style="@style/TextStyleShadow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -79,7 +81,7 @@
                 android:fontFamily="@font/opensans_bold_extra"
                 android:text="1000"
                 android:textColor="@android:color/white"
-                android:textSize="40dp"
+                android:textSize="40sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -90,7 +92,7 @@
                 android:fontFamily="@font/opensans_regular"
                 android:text="people saved"
                 android:textColor="@android:color/white"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
         </LinearLayout>
 

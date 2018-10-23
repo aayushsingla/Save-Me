@@ -3,12 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.codefundo.saveme">
 
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission. ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-feature
         android:name="android.hardware.location.network"
@@ -112,9 +118,7 @@
         <activity
             android:name=".rescueteam.QRCodeScannerActivity"
             android:label="@string/title_activity_qrcode_scanner_activty"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
             android:name=".donations.DonationActivity"
@@ -123,8 +127,12 @@
 
         <activity
             android:name=".report.ReportActivity"
-            android:label="Report Missing"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="Report Someone"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".report.FormActivity"
+            android:label="@string/title_activity_form"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
