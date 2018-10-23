@@ -193,7 +193,7 @@ public class RescueFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(final View view) {
-        final Intent rescueActivityIntent = new Intent(view.getContext(), QRCodeScannerActivity.class);
+        final Intent rescueActivityIntent = new Intent(view.getContext(), RescueActivity.class);
         startActivity(rescueActivityIntent);
     }
 }

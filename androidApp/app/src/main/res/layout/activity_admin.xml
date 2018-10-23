@@ -3,16 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".rescueteam.RescueActivity">
+    tools:context=".admin.AdminActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
+        android:background="@android:color/white"
         app:navigationIcon="@drawable/ic_arrow_back">
 
     </androidx.appcompat.widget.Toolbar>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?actionBarSize"
+        android:layout_marginBottom="?actionBarSize"
+        android:background="@android:color/white">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bar"
@@ -21,7 +31,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:elevation="8dp"
-        app:hideOnScroll="true" />
+        app:hideOnScroll="true"
+        app:navigationIcon="@drawable/ic_menu24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -31,6 +42,5 @@
         android:foreground="@drawable/ic_map_black_24dp"
         android:foregroundGravity="center"
         app:layout_anchor="@id/bar" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

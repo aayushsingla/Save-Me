@@ -36,7 +36,7 @@ android {
     }
 //    dexOptions {
 //        incremental true
-//    }
+//    }5
 }
 
 dependencies {
