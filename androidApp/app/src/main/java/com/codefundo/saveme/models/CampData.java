@@ -3,6 +3,7 @@ package com.codefundo.saveme.models;
 public class CampData {
 
     private String id;          //any Random unique Id
+    public String address, postalCode;//,phonenumber,email,status,memberType;
     private double latitude;
     private double longitude;
     private String creatorAzureId;     // use LoginActivity.getCurrentUserUniqueId() to get this
