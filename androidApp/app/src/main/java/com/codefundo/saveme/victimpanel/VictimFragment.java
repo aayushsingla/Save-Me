@@ -2,7 +2,6 @@ package com.codefundo.saveme.victimpanel;
 
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,6 +27,8 @@ import org.jetbrains.annotations.NotNull;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import static com.codefundo.saveme.maps.MapActivity.launchMapActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -126,8 +127,7 @@ public class VictimFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(final View view) {
-        final Intent mapActivityIntent = new Intent(view.getContext(), MapActivity.class);
-        startActivity(mapActivityIntent);
+        launchMapActivity(getContext(), "victim");
     }
 
 

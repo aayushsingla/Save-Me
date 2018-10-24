@@ -1,7 +1,9 @@
-package com.codefundo.saveme.victimpanel;
+package com.codefundo.saveme.maps;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -72,6 +74,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     private Handler handlerVolunteers;
     private KillableRunnable runnerVictims;
     private KillableRunnable runnerVolunteers;
+    private String type = ""; //"victim", "volunteer", "user"
+    private Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,11 +194,23 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     }
 
+    public static void launchMapActivity(Context mContext, String type) {
+        Bundle bundle = new Bundle();
+        bundle.putString("type", type);
+        Intent intent = new Intent(mContext, MapActivity.class);
+        intent.putExtra("MAP_INTENT", bundle);
+        mContext.startActivity(intent);
+    }
+
     @Override
     public void onLocationChanged(Location location) {
-        Location mLastLocation = location;
+        mLastLocation = location;
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        sendLocationToDb(latLng);
+        if (type.matches("victim"))
+            sendLocationToDbVictim(latLng);
+        else if (type.matches("volunteer"))
+            sendLocationToDbVolunteer(latLng);
+
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLng)
                 .zoom(16f)
@@ -204,42 +220,39 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
-    private void sendLocationToDb(LatLng latLng) {
-        final MobileServiceTable<VictimData> table = mClient.getTable(VictimData.class);
-
-        ListenableFuture<MobileServiceList<VictimData>> listenableFuture = table.where().field("id").eq(LoginActivity.getDeviceIMEI(this)).execute();
-        Futures.addCallback(listenableFuture, new FutureCallback<MobileServiceList<VictimData>>() {
-            @Override
-            public void onSuccess(MobileServiceList<VictimData> result) {
-                VictimData victimData = new VictimData();
-                if (result.getTotalCount() > 0) {
-                    victimData = result.get(0);
-                    victimData.setCurrentLat(latLng.latitude);
-                    victimData.setCurrentLong(latLng.longitude);
-                    victimData.setStatus("danger");
-                    table.update(victimData);
-                    Log.e("location:", "existing User");
-                } else {
-                    victimData.setId(LoginActivity.getDeviceIMEI(MapActivity.this));
-                    victimData.setAzureId(LoginActivity.getCurrentUserUniqueId(MapActivity.this));
-                    victimData.setCurrentLat(latLng.latitude);
-                    victimData.setCurrentLong(latLng.longitude);
-                    victimData.setStatus("danger");
-                    victimData.setSavedBy("null");
-                    victimData.setSavedByUUID("null");
-                    table.insert(victimData);
-                    Log.e("location:", "new User");
-
+    private void sendLocationToDbVolunteer(LatLng latLng) {
+        //[:TODO:] get volunteer's actual status here
+        if ("working".matches("working")) {
+            final MobileServiceTable<VolunteerData> table = mClient.getTable(VolunteerData.class);
+            ListenableFuture<MobileServiceList<VolunteerData>> listenableFuture = table.where().field("id").eq(LoginActivity.getDeviceIMEI(this)).execute();
+            Futures.addCallback(listenableFuture, new FutureCallback<MobileServiceList<VolunteerData>>() {
+                @Override
+                public void onSuccess(MobileServiceList<VolunteerData> result) {
+                    VolunteerData volunteerData = new VolunteerData();
+                    if (result.getTotalCount() > 0) {
+                        volunteerData = result.get(0);
+                        volunteerData.setCurrentLat(latLng.latitude);
+                        volunteerData.setCurrentLong(latLng.longitude);
+                        table.update(volunteerData);
+                        Log.e("location:", "existing Volunteer");
+                    } else {
+                        volunteerData.setId(LoginActivity.getDeviceIMEI(MapActivity.this));
+                        volunteerData.setAzureId(LoginActivity.getCurrentUserUniqueId(MapActivity.this));
+                        volunteerData.setCurrentLat(latLng.latitude);
+                        volunteerData.setCurrentLong(latLng.longitude);
+                        //[:TODO:] replace "working" by actual status of volunteer
+                        volunteerData.setCurrentStatus("working");
+                        table.insert(volunteerData);
+                        Log.e("location:", "new Volunteer");
+                    }
                 }
 
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Log.e("Tag", t.getMessage());
-            }
-        });
-
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.e("Tag", t.getMessage());
+                }
+            });
+        }
     }
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -403,12 +416,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     @Override
     public boolean onMarkerClick(Marker marker) {
         switch (Objects.requireNonNull(marker.getTitle())) {
-            case "Victim":
-                Log.e("MapActivity:", "Victim Clicked");
-                marker.getSnippet();
-                break;
             case "Volunteer":
-                Log.e("MapActivity:", "Volunteer Clicked");
+            case "Victim":
+                if (marker.getSnippet().matches(Objects.requireNonNull(LoginActivity.getDeviceIMEI(this)))) {
+                    break;
+                }
+                Location location = new Location(LocationManager.GPS_PROVIDER);
+                location.setLatitude(marker.getPosition().latitude);
+                location.setLongitude(marker.getPosition().longitude);
+                UserDetailsMaps userDetailsMaps = UserDetailsMaps.newInstance(marker.getSnippet(), mLastLocation, location);
+                userDetailsMaps.show(getSupportFragmentManager(), "Victim Fragment");
                 break;
             case "Camp":
                 Log.e("Map Activty:", "Camp Clicked");
@@ -476,5 +493,52 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
 
     }
+
+    private void sendLocationToDbVictim(LatLng latLng) {
+        final MobileServiceTable<VictimData> table = mClient.getTable(VictimData.class);
+
+        ListenableFuture<MobileServiceList<VictimData>> listenableFuture = table.where().field("id").eq(LoginActivity.getDeviceIMEI(this)).execute();
+        Futures.addCallback(listenableFuture, new FutureCallback<MobileServiceList<VictimData>>() {
+            @Override
+            public void onSuccess(MobileServiceList<VictimData> result) {
+                VictimData victimData = new VictimData();
+                if (result.getTotalCount() > 0) {
+                    victimData = result.get(0);
+                    victimData.setCurrentLat(latLng.latitude);
+                    victimData.setCurrentLong(latLng.longitude);
+                    victimData.setStatus("danger");
+                    table.update(victimData);
+                    Log.e("location:", "existing User");
+                } else {
+                    victimData.setId(LoginActivity.getDeviceIMEI(MapActivity.this));
+                    victimData.setAzureId(LoginActivity.getCurrentUserUniqueId(MapActivity.this));
+                    victimData.setCurrentLat(latLng.latitude);
+                    victimData.setCurrentLong(latLng.longitude);
+                    victimData.setStatus("danger");
+                    victimData.setSavedBy("null");
+                    victimData.setSavedByUUID("null");
+                    table.insert(victimData);
+                    Log.e("location:", "new User");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.e("Tag", t.getMessage());
+            }
+        });
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Bundle bundle = getIntent().getBundleExtra("MAP_INTENT");
+        if (bundle != null)
+            type = bundle.getString("type");
+
+    }
+
 }
 

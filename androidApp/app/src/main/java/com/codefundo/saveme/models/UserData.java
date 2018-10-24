@@ -12,6 +12,8 @@ public class UserData {
 
     //details
     //optional information
+    private String age;
+    private String gender;
     private String address;
     private String city;
     private String state;
@@ -134,5 +136,20 @@ public class UserData {
         this.azureId = azureId;
     }
 
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
 
 }

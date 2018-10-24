@@ -39,9 +39,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".rescueteam.RescueActivity"
             android:label="@string/activity_rescue_team"
@@ -85,7 +83,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".victimpanel.MapActivity"
+            android:name=".maps.MapActivity"
             android:label="@string/title_activity_map" />
         <activity
             android:name=".auth.LoginActivity"
@@ -101,9 +99,7 @@
         <activity
             android:name=".auth.DetailsActivity"
             android:label="User Details"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".admin.AdminActivity"
             android:label="@string/title_activity_admin_activity"
@@ -118,20 +114,22 @@
         <activity
             android:name=".rescueteam.QRCodeScannerActivity"
             android:label="@string/title_activity_qrcode_scanner_activty"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".donations.DonationActivity"
             android:label="Donate"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".report.ReportActivity"
             android:label="Report Someone"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".report.FormActivity"
             android:label="@string/title_activity_form"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".admin.CampMarkingActivity"
+            android:label="@string/title_activity_camp_marking"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
