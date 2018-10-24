@@ -21,10 +21,10 @@
     </style>
 
     <style name="MapTheme.Map">
-        <item name="colorPrimary">#E91E63</item>
-        <item name="colorPrimaryDark">#C51162</item>
-        <item name="colorAccent">#FBC02D</item>
-        <item name="colorControlActivated">#E91E63</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">#2979FF</item>
+        <item name="colorControlActivated">@color/colorPrimaryDark</item>
     </style>
 
 

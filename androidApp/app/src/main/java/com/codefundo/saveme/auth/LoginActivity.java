@@ -230,7 +230,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 new android.app.AlertDialog.Builder(this)
                         .setTitle("Access to Location")
-                        .setMessage("IMEI Id of ypur device is needed to uniquely identify you and track your location.")
+                        .setMessage("IMEI Id of your device is needed to uniquely identify you and track your location.")
                         .setPositiveButton("OK", (dialog, which) -> ActivityCompat.requestPermissions(this,
                                 new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_CODE_IMEI_PERMISSION))
                         .show();
