@@ -1,4 +1,4 @@
-package com.codefundo.saveme.victimpanel;
+package com.codefundo.saveme.maps;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -75,6 +75,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     private KillableRunnable runnerVictims;
     private KillableRunnable runnerVolunteers;
     private String type = ""; //"victim", "volunteer", "user"
+    private Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,6 +204,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     @Override
     public void onLocationChanged(Location location) {
+        mLastLocation = location;
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         if (type.matches("victim"))
             sendLocationToDbVictim(latLng);
@@ -414,12 +416,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     @Override
     public boolean onMarkerClick(Marker marker) {
         switch (Objects.requireNonNull(marker.getTitle())) {
-            case "Victim":
-                Log.e("MapActivity:", "Victim Clicked");
-                marker.getSnippet();
-                break;
             case "Volunteer":
-                Log.e("MapActivity:", "Volunteer Clicked");
+            case "Victim":
+                if (marker.getSnippet().matches(Objects.requireNonNull(LoginActivity.getDeviceIMEI(this)))) {
+                    break;
+                }
+                Location location = new Location(LocationManager.GPS_PROVIDER);
+                location.setLatitude(marker.getPosition().latitude);
+                location.setLongitude(marker.getPosition().longitude);
+                UserDetailsMaps userDetailsMaps = UserDetailsMaps.newInstance(marker.getSnippet(), mLastLocation, location);
+                userDetailsMaps.show(getSupportFragmentManager(), "Victim Fragment");
                 break;
             case "Camp":
                 Log.e("Map Activty:", "Camp Clicked");

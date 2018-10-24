@@ -31,6 +31,8 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     private TextView cityTv;
     private TextView stateTv;
     private TextView pincodeTv;
+    private TextView ageTv;
+    private TextView genderTv;
     private TextView contactNumberTv;
     private TextView emergencyNumber1Tv;
     private TextView emergencyNumber2Tv;
@@ -50,6 +52,8 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         FloatingActionButton nextButton = findViewById(R.id.fab);
         addressTv = findViewById(R.id.et_address);
         cityTv = findViewById(R.id.et_city);
+        ageTv = findViewById(R.id.et_age);
+        genderTv = findViewById(R.id.et_gender);
         stateTv = findViewById(R.id.et_state);
         pincodeTv = findViewById(R.id.et_pincode);
         contactNumberTv = findViewById(R.id.et_contact_number);
@@ -79,6 +83,8 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             public void onSuccess(MobileServiceList<UserData> result) {
                 if (result.getTotalCount() > 0) {
                     UserData data = result.get(0);
+                    ageTv.setText(data.getAge());
+                    genderTv.setText(data.getGender());
                     addressTv.setText(data.getAddress());
                     cityTv.setText(data.getCity());
                     stateTv.setText(data.getState());
@@ -114,6 +120,8 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         item.setBloodGroup(bloodGroupTv.getText().toString());
         item.setCity(cityTv.getText().toString());
         item.setState(stateTv.getText().toString());
+        item.setAge(ageTv.getText().toString());
+        item.setGender(genderTv.getText().toString());
         item.setPincode(pincodeTv.getText().toString());
         pushToDatabase();
     }

@@ -21,7 +21,7 @@ import java.util.Random;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import static com.codefundo.saveme.victimpanel.MapActivity.launchMapActivity;
+import static com.codefundo.saveme.maps.MapActivity.launchMapActivity;
 import static com.google.android.material.bottomappbar.BottomAppBar.FAB_ALIGNMENT_MODE_END;
 
 

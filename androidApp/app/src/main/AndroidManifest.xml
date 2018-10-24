@@ -83,7 +83,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".victimpanel.MapActivity"
+            android:name=".maps.MapActivity"
             android:label="@string/title_activity_map" />
         <activity
             android:name=".auth.LoginActivity"

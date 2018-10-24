@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import static com.codefundo.saveme.victimpanel.MapActivity.launchMapActivity;
+import static com.codefundo.saveme.maps.MapActivity.launchMapActivity;
 
 /**
  * A simple {@link Fragment} subclass.

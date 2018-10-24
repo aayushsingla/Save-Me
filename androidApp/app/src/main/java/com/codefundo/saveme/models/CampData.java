@@ -3,7 +3,8 @@ package com.codefundo.saveme.models;
 public class CampData {
 
     private String id;          //any Random unique Id
-    public String address, postalCode;//,phonenumber,email,status,memberType;
+    private String address;
+    private String postalCode;
     private double latitude;
     private double longitude;
     private String creatorAzureId;     // use LoginActivity.getCurrentUserUniqueId() to get this
@@ -57,4 +58,21 @@ public class CampData {
     public void setType(String type) {
         this.type = type;
     }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
 }

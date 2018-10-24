@@ -11,7 +11,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.codefundo.saveme.victimpanel.MapActivity.launchMapActivity;
+import static com.codefundo.saveme.maps.MapActivity.launchMapActivity;
 
 public class RescueViewHolder extends RecyclerView.ViewHolder {
     private SimpleDraweeView simpleDraweeView;

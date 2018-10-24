@@ -23,4 +23,6 @@ public class AdminActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         recyclerView.setAdapter(new AdminAdapter());
     }
+
+
 }
