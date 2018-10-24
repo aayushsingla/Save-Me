@@ -428,6 +428,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 userDetailsMaps.show(getSupportFragmentManager(), "Victim Fragment");
                 break;
             case "Camp":
+                Location l = new Location(LocationManager.GPS_PROVIDER);
+                l.setLatitude(marker.getPosition().latitude);
+                l.setLongitude(marker.getPosition().longitude);
+                CampDetailsMaps campDetailsMaps = CampDetailsMaps.newInstance(marker.getSnippet(), mLastLocation, l);
+                campDetailsMaps.show(getSupportFragmentManager(), "Camp Fragment");
+
                 Log.e("Map Activty:", "Camp Clicked");
                 break;
         }
