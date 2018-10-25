@@ -10,6 +10,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.codefundo.saveme.PathUtil;
+import com.codefundo.saveme.R;
 import com.codefundo.saveme.SaveMe;
 import com.codefundo.saveme.auth.LoginActivity;
 import com.codefundo.saveme.models.MissingPeopleData;
@@ -17,12 +19,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import com.codefundo.saveme.R;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -37,8 +33,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Objects;
 import java.util.Random;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class FormActivity extends AppCompatActivity {
     private static final String storageContainer = "userphotos";
@@ -142,7 +141,7 @@ public class FormActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NotNull Throwable t) {
-                Log.e("FormActivity:error",t.getMessage());
+                Log.e("DonationFormActivity:error", t.getMessage());
             }
         });
 
@@ -164,7 +163,7 @@ public class FormActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            filePath=PathUtil.getPath(this,data.getData());
+            filePath = PathUtil.getPath(this, data.getData());
             if (filePath != null) {
                 Log.e("filePath:",filePath);
                 simpleDraweeView.setImageURI(data.getData());

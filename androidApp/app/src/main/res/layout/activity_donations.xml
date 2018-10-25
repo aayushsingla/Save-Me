@@ -9,10 +9,18 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        app:navigationIcon="@drawable/ic_arrow_back">
+        android:background="@android:color/white"
+        app:navigationIcon="@drawable/ic_arrow_back" />
 
-    </androidx.appcompat.widget.Toolbar>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="?actionBarSize"
+        android:layout_marginTop="?actionBarSize"
+        android:background="@android:color/white">
 
+    </androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bar"
@@ -21,14 +29,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:elevation="8dp"
-        app:hideOnScroll="true" />
+        app:fabAlignmentMode="end" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:elevation="12dp"
-        android:foreground="@drawable/ic_map_black_24dp"
+        android:foreground="@drawable/ic_person_add_24dp"
         android:foregroundGravity="center"
         app:layout_anchor="@id/bar" />
 
