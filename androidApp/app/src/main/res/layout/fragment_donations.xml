@@ -23,7 +23,7 @@
         android:layout_marginTop="10dp"
         android:fontFamily="@font/opensans_bold_extra"
         android:gravity="top|center"
-        android:text="Donate to the needy"
+        android:text="Donate to rescue team"
         android:textColor="@android:color/white"
         android:textSize="30sp"
         android:textStyle="bold" />
@@ -47,7 +47,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/opensans_bold_extra"
-                android:text="100000"
+                android:id="@+id/tv_no_of_donors"
+                android:text=""
                 android:textColor="@android:color/white"
                 android:textSize="28dp"
                 android:textStyle="bold" />
@@ -78,7 +79,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/opensans_bold_extra"
-                android:text="100000000"
+                android:id="@+id/tv_total_donation"
+                android:text="0"
                 android:textColor="@android:color/white"
                 android:textSize="28dp"
                 android:textStyle="bold" />
