@@ -207,6 +207,7 @@
         android:layout_height="?actionBarSize"
         android:layout_gravity="bottom"
         android:elevation="8dp"
+        app:navigationIcon="@drawable/ic_settings_black_24dp"
         app:fabAlignmentMode="end"
         app:hideOnScroll="true" />
 
