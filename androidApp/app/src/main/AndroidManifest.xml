@@ -141,8 +141,13 @@
             android:label="@string/title_activity_form"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".donations.DonationFormActivity"
+            android:label="@string/title_donation_form"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".admin.CampMarkingActivity"
             android:label="@string/title_activity_camp_marking"
+            android:theme="@style/AppTheme.NoActionBar" />
             android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver

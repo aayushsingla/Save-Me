@@ -1,4 +1,4 @@
-package com.codefundo.saveme.report;
+package com.codefundo.saveme;
 
 
 import android.content.ContentUris;
@@ -20,7 +20,7 @@ public class PathUtil {
      * other file-based ContentProviders.
      *
      * @param context The context.
-     * @param uri The Uri to query.
+     * @param uri     The Uri to query.
      * @author paulburke
      */
     public static String getPath(final Context context, final Uri uri) {
