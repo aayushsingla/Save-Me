@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -13,6 +14,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -54,6 +56,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import static com.codefundo.saveme.rescueteam.RescueActivity.VOLUNTEER_LOCATION;
+import static com.codefundo.saveme.victimpanel.WarningMapsLaunch.SENDING_VICTIM_LOCATION;
+
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMarkerClickListener {
 
     private final static int REQUEST_CODE_LOCATION_PERMISSION = 123;
@@ -76,18 +81,21 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     private KillableRunnable runnerVolunteers;
     private String type = ""; //"victim", "volunteer", "user"
     private Location mLastLocation;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MapActivity.this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
         prepareBitmaps();
+
     }
 
     /**
@@ -103,7 +111,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mapReady();
-
     }
 
     private void mapReady() {
@@ -221,8 +228,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     }
 
     private void sendLocationToDbVolunteer(LatLng latLng) {
-        //[:TODO:] get volunteer's actual status here
-        if ("working".matches("working")) {
+        if (sharedPreferences.getBoolean(VOLUNTEER_LOCATION, true)) {
             final MobileServiceTable<VolunteerData> table = mClient.getTable(VolunteerData.class);
             ListenableFuture<MobileServiceList<VolunteerData>> listenableFuture = table.where().field("id").eq(LoginActivity.getDeviceIMEI(this)).execute();
             Futures.addCallback(listenableFuture, new FutureCallback<MobileServiceList<VolunteerData>>() {
@@ -240,7 +246,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                         volunteerData.setAzureId(LoginActivity.getCurrentUserUniqueId(MapActivity.this));
                         volunteerData.setCurrentLat(latLng.latitude);
                         volunteerData.setCurrentLong(latLng.longitude);
-                        //[:TODO:] replace "working" by actual status of volunteer
                         volunteerData.setCurrentStatus("working");
                         table.insert(volunteerData);
                         Log.e("location:", "new Volunteer");
@@ -252,8 +257,29 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                     Log.e("Tag", t.getMessage());
                 }
             });
+        } else {
+            final MobileServiceTable<VolunteerData> table = mClient.getTable(VolunteerData.class);
+            ListenableFuture<MobileServiceList<VolunteerData>> listenableFuture = table.where().field("id").eq(LoginActivity.getDeviceIMEI(this)).execute();
+            Futures.addCallback(listenableFuture, new FutureCallback<MobileServiceList<VolunteerData>>() {
+                @Override
+                public void onSuccess(MobileServiceList<VolunteerData> result) {
+                    VolunteerData volunteerData;
+                    if (result.getTotalCount() > 0) {
+                        volunteerData = result.get(0);
+                        volunteerData.setCurrentStatus("not working");
+                        table.update(volunteerData);
+                        Log.e("location:", "existing Volunteer");
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+
+                }
+            });
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -482,7 +508,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         if (handlerVictims != null) {
             handlerVictims.post(runnerVictims);
             runnerVictims.restart();
-            handlerVolunteers.postDelayed(runnerVolunteers, 5000);
+        }
+        if (handlerVictims != null) {
+            handlerVolunteers.postDelayed(runnerVolunteers, 1000);
             runnerVolunteers.restart();
         }
 
@@ -541,10 +569,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     protected void onStart() {
         super.onStart();
         Bundle bundle = getIntent().getBundleExtra("MAP_INTENT");
-        if (bundle != null)
+        if (bundle != null) {
             type = bundle.getString("type");
-
+            if (type.matches("victim")) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(SENDING_VICTIM_LOCATION, true);
+                editor.apply();
+            }
+        }
     }
+
 
 }
 

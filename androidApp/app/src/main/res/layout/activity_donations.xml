@@ -16,8 +16,8 @@
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="?actionBarSize"
         android:layout_marginTop="?actionBarSize"
+        android:layout_marginBottom="?actionBarSize"
         android:background="@android:color/white">
 
     </androidx.recyclerview.widget.RecyclerView>
@@ -37,7 +37,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:elevation="12dp"
-        android:foreground="@drawable/ic_person_add_24dp"
+        android:foreground="@drawable/ic_hand_pay"
         android:foregroundGravity="center"
         app:layout_anchor="@id/bar" />
 

@@ -24,11 +24,10 @@
     <string name="skip"><u>Skip</u></string>
     <string name="title_activity_admin_activity">Admin Activity</string>
     <string name="title_activity_qrcode_scanner_activty">QRCodeScannerActivty</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_form">Victim Details</string>
     <string name="title_activity_camp_marking">Mark camps</string>
     <string name="title_activity_notification">Send Notifications</string>
     <string name="Rs">\u20B9</string>
+    <string name="warning_maps_victim">Please go ahead only if you are in some real danger. Once you started this service your location will be sent to our database and you will be displayed as a victim. In such a case, you can be marked safe only by a registered volunteer.
+        Once started, someone from rescue team will come and help you asap. If you just want to look on current conditions of the disaster, press the maps button in Home Screen.</string>
 </resources>
