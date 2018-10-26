@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.codefundo.saveme.MainActivity;
 import com.codefundo.saveme.R;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -33,10 +34,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         Log.d("FCM", "Fetch FCM Registration Token");
-
-
         RegistrationRunnable registrationAsyncTask = new RegistrationRunnable(this, token);
-
+        FirebaseMessaging.getInstance().subscribeToTopic("general");
         (new Thread(registrationAsyncTask)).start();
 
     }
@@ -44,33 +43,41 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Map<String, String> nhMessage = remoteMessage.getData();
-        String message = nhMessage.get("message");
-        sendNotification(message);
+        String title = nhMessage.get("Title");
+        String message = nhMessage.get("Message");
+        if (title == null) {
+            title = "";
+        }
+        if (message == null) {
+            message = "";
+        }
+        sendNotification(title, message);
         if (MainActivity.isVisible) {
             MainActivity.mainActivity.ToastNotify(message);
         }
     }
 
-    private void sendNotification(String msg) {
+    private void sendNotification(String title, String msg) {
 
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         NotificationManager mNotificationManager = (NotificationManager)
                 getSystemService(Context.NOTIFICATION_SERVICE);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 intent, PendingIntent.FLAG_ONE_SHOT);
-
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("Notification Hub Demo")
+                        .setContentTitle(title)
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
                         .setSound(defaultSoundUri)
-                        .setContentText(msg);
+                        .setContentText(msg)
+                        .setAutoCancel(true);
 
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
