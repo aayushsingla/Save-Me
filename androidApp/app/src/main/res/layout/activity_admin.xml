@@ -31,8 +31,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:elevation="8dp"
-        app:hideOnScroll="true"
-        app:navigationIcon="@drawable/ic_menu24" />
+        app:hideOnScroll="false"
+        app:navigationIcon="@drawable/ic_settings_black_24dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

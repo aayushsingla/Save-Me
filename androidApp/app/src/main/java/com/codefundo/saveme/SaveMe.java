@@ -5,6 +5,8 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 
 import java.net.MalformedURLException;
@@ -25,5 +27,7 @@ public class SaveMe extends Application {
     public void onCreate() {
         super.onCreate();
         Fresco.initialize(this);
+        FirebaseApp.initializeApp(this);
+        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
     }
 }

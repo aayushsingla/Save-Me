@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.codefundo.saveme.R;
+import com.codefundo.saveme.admin.notification.NotificationActivity;
 import com.codefundo.saveme.models.AdminModel;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -27,6 +28,7 @@ public class AdminViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(v -> {
             switch (adminModel.getText()) {
                 case "Send Notifications":
+                    v.getContext().startActivity(new Intent(v.getContext(), NotificationActivity.class));
                     break;
                 case "Mark Camps":
                     v.getContext().startActivity(new Intent(v.getContext(), CampMarkingActivity.class));

@@ -1,3 +1,5 @@
+import com.google.gms.googleservices.GoogleServicesPlugin
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
@@ -42,7 +44,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.schibstedspain.android:leku:5.0.0'
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'android.arch.navigation:navigation-fragment:1.0.0-alpha06'
@@ -53,8 +55,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     testImplementation 'junit:junit:4.12'
     implementation 'com.microsoft.azure:azure-mobile-android:3.4.0'
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+    androidTestImplementation 'androidx.test:runner:1.1.0-beta02'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-beta02'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.microsoft.azure:azure-mobile-android:3.4.0'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
@@ -62,11 +64,12 @@ dependencies {
     implementation 'com.google.zxing:core:3.2.1'
     implementation 'com.facebook.fresco:fresco:1.11.0'
     implementation 'com.microsoft.azure.android:azure-storage-android:2.0.0@aar'
-
-
+    implementation 'com.google.firebase:firebase-core:16.0.4'
+    implementation 'com.microsoft.azure:notification-hubs-android-sdk:0.4@aar'
+    implementation 'com.microsoft.azure:azure-notifications-handler:1.0.1@aar'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
 }
 apply plugin: 'com.google.gms.google-services'
-
 repositories {
     mavenCentral()
 }
