@@ -148,7 +148,7 @@
             android:name=".admin.CampMarkingActivity"
             android:label="@string/title_activity_camp_marking"
             android:theme="@style/AppTheme.NoActionBar" />
-            android:theme="@style/AppTheme.NoActionBar" />
+        android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver
             android:name="com.microsoft.windowsazure.notifications.NotificationsBroadcastReceiver"

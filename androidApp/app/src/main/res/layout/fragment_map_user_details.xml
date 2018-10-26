@@ -202,7 +202,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:layout_marginTop="20dp"
@@ -212,10 +212,13 @@
                         <Button
                             android:id="@+id/btn_reach_him"
                             style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
-                            android:layout_width="180dp"
-                            android:layout_height="48dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
                             android:background="@color/colorAccent"
                             android:padding="5dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_weight="0.5"
                             android:text="Reach Him"
                             android:textAllCaps="false"
                             android:textColor="@color/leku_white"
@@ -224,8 +227,9 @@
                         <Button
                             android:id="@+id/btn_ok"
                             style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
-                            android:layout_width="90dp"
-                            android:layout_height="48dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
                             android:layout_marginStart="10dp"
                             android:background="@color/colorAccent"
                             android:padding="5dp"
